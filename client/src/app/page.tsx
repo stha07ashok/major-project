@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 ">
+    <div className="min-h-[calc(100vh-450px)] px-20 py-7 ">
       <div>hello world</div>
     </div>
   );
