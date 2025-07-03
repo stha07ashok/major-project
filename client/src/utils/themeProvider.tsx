@@ -16,7 +16,7 @@ export default function CustomThemeProvider({
     return null;
   }
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark">
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       {children}
     </ThemeProvider>
   );

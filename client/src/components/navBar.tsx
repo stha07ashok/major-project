@@ -27,15 +27,16 @@ const Navbar = () => {
     return date.toLocaleString("en-US", options);
   };
   return (
-    <header className="shadow-md sticky top-0 z-50 border-b border-gray-300 ">
+    <header className="shadow-md sticky top-0 z-50 border-b border-gray-300 bg-[#ffffff] dark:bg-[#171717] ">
       <nav className="w-full h-full flex items-center justify-between px-7 py-2">
         {/* Left: Emblem */}
         <div className="flex items-center">
           <Image
             src="/images/traffic_logo.png"
             alt="Nepal Emblem"
-            width={100}
-            height={100}
+            width={64}
+            height={64}
+            className="w-16 h-16 md:w-20 md:h-20 mr-2"
           />
         </div>
 
