@@ -9,7 +9,7 @@ export default function Home() {
           alt="Traffic Man"
           width={200}
           height={200}
-          className="w-96 h-96 "
+          className="w-96 h-100 "
         />
       </div>
     </div>
