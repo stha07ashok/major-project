@@ -69,10 +69,10 @@ const Navbar = () => {
           <Link href="/">
             <div className="space-x-6 font-bold">Home</div>
           </Link>
-          <Link href="/">
+          <Link href="/watchTraffic">
             <div className="space-x-6 font-bold">Watch Traffic</div>
           </Link>
-          <Link href="/">
+          <Link href="/details">
             <div className="space-x-6 font-bold">Details</div>
           </Link>
         </div>
