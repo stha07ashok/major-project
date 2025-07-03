@@ -8,8 +8,8 @@ export default function Home() {
           src="/images/trafficMan.png"
           alt="Traffic Man"
           width={200}
-          height={200}
-          className="w-96 h-100 "
+          height={480}
+          className="w-96 h-120 "
         />
       </div>
     </div>

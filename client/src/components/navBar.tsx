@@ -65,7 +65,17 @@ const Navbar = () => {
         </div>
       </nav>
       <div className="bg-blue-700 text-white flex items-center justify-between px-20 py-2 border-t border-gray-300">
-        <div className="space-x-6 font-bold">Home</div>
+        <div className="flex px-9 space-x-9">
+          <Link href="/">
+            <div className="space-x-6 font-bold">Home</div>
+          </Link>
+          <Link href="/">
+            <div className="space-x-6 font-bold">Watch Traffic</div>
+          </Link>
+          <Link href="/">
+            <div className="space-x-6 font-bold">Details</div>
+          </Link>
+        </div>
         <div className="flex">
           <div className="py-2">
             <Dark />
