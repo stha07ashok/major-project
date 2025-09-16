@@ -6,7 +6,7 @@ import { LuBrain } from "react-icons/lu";
 
 const Navbar = () => {
   return (
-    <div className="border-b-2 border-gray-200 w-full h-18 shadow-lg fixed bg-gray-200 top-0z-50">
+    <div className="border-b-2 border-gray-200 w-full h-18 shadow-lg fixed top-0z-50">
       <div className="flex justify-between px-10 py-4">
         <div className="flex gap-3 cursor-pointer">
           <div className="h-9 my-1">
@@ -20,7 +20,7 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex gap-8 items-center">
-          <div className="font-bold hover:underline flex gap-1 items-center cursor-pointer">
+          <div className="font-bold hover:underline flex gap-1 items-center group hover:scale-105 cursor-pointer">
             <div>
               <RxDashboard />
             </div>
