@@ -20,13 +20,13 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex gap-8 items-center">
-          <div className="font-bold hover:underline flex gap-1 items-center group hover:scale-105 cursor-pointer">
+          <div className="font-bold hover:underline flex gap-1 items-center group hover:scale-105 transition-transform cursor-pointer">
             <div>
               <RxDashboard />
             </div>
             Dashboard
           </div>
-          <div className="font-bold hover:underline flex gap-1 items-center cursor-pointer">
+          <div className="font-bold hover:underline flex gap-1 items-center group hover:scale-105 transition-transform cursor-pointer">
             <div>
               <LuBrain />
             </div>
