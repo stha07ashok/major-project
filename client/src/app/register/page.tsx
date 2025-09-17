@@ -84,7 +84,7 @@ const RegisterPage = () => {
 
           <div className="flex gap-2 text-sm">
             <span>Have an account?</span>
-            <a href="/register" className="hover:underline">
+            <a href="/login" className="hover:underline">
               Login
             </a>
           </div>
