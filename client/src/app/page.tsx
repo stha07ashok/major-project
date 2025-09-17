@@ -88,7 +88,7 @@ export default function Page() {
   };
 
   return (
-    <div className="min-h-[calc(160vh-450px)] px-10 py-22 sm:px-6 lg:px-10 ">
+    <div className="min-h-[calc(160vh-450px)] px-3 py-22 sm:px-6 lg:px-10 ">
       <div className="flex flex-col gap-6">
         {/* Top Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
