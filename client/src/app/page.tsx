@@ -23,7 +23,7 @@ export default function Page() {
               <span className="font-light">23</span>
             </div>
             <div>
-              <CgDanger className="w-9 h-8 text-red-700" />
+              <CgDanger className="w-9 h-8 text-red-400" />
             </div>
           </div>
           <div className="border border-gray-200 hoverEffect shadow-lg w-full rounded-full p-4 flex justify-between items-center">

@@ -11,7 +11,7 @@ const Navbar = () => {
       <div className="flex justify-between px-10 py-4">
         <Link href="/" className="flex gap-3 cursor-pointer">
           <div className="h-9 my-1">
-            <IoCameraOutline className="h-9 w-9 text-green-200 border rounded-full p-1 bg-blue-700" />
+            <IoCameraOutline className="h-9 w-9 text-green-200 border rounded-lg p-1 bg-blue-700" />
           </div>
           <div className="h-9 ">
             <div className="font-bold">TrafficWatch AI</div>
