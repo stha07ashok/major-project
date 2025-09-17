@@ -2,6 +2,7 @@ import { FaRegEye } from "react-icons/fa6";
 import { CgDanger } from "react-icons/cg";
 import { MdPeople } from "react-icons/md";
 import { RiMotorbikeFill } from "react-icons/ri";
+import { LuBrain, LuShield } from "react-icons/lu";
 
 export default function Page() {
   return (
@@ -45,7 +46,38 @@ export default function Page() {
             </div>
           </div>
         </div>
-        <div>2</div>
+        <div className="flex flex-col gap-3 border border-gray-200 rounded-lg p-6 shadow-lg ">
+          <div className="flex gap-2 items-center mb-4">
+            <LuShield className="w-10 h-10 text-red-400" />
+            <span className="font-bold text-2xl">System Status</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="flex flex-col gap-1 items-center">
+              <span>Camera Status</span>
+              <span className="border border-gray-200 rounded-full w-full flex items-center shadow-lg font-bold justify-center px-3 py-1 bg-blue-500 text-white ">
+                Online
+              </span>
+            </div>
+            <div className="flex flex-col gap-1 items-center">
+              <span>AI Model</span>
+              <span className="border border-gray-200 rounded-full w-full flex items-center shadow-lg font-bold justify-center px-3 py-1 bg-blue-500 text-white ">
+                Active
+              </span>
+            </div>
+            <div className="flex flex-col gap-1 items-center">
+              <span>Database</span>
+              <span className="border border-gray-200 rounded-full w-full flex items-center shadow-lg font-bold justify-center px-3 py-1 bg-blue-500 text-white ">
+                Connected
+              </span>
+            </div>
+            <div className="flex flex-col gap-1 items-center">
+              <span>Alert System</span>
+              <span className="border border-gray-200 rounded-full w-full flex items-center shadow-lg font-bold justify-center px-3 py-1 bg-blue-500 text-white ">
+                Enabled
+              </span>
+            </div>
+          </div>
+        </div>
         <div>3</div>
         <div>4</div>
         <div>5</div>

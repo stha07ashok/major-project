@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <div className="border-b bg-white dark:bg-[#293944] border-gray-200 w-full h-18 shadow-lg fixed top-0z-50">
+    <div className="border-b bg-white dark:bg-[#293944] border-gray-200 w-full h-18 shadow-lg fixed top-0 z-50">
       <div className="flex justify-between px-10 py-4">
         <Link href="/" className="flex gap-3 cursor-pointer">
           <div className="h-9 my-1">
