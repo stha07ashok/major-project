@@ -124,7 +124,7 @@ const AboutProject = () => {
 
         {/* Features Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hover:shadow-xl transition">
+          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hoverEffect">
             <LuShield className="w-10 h-10 text-red-400" />
             <span className="font-bold text-lg">Helmet Detection</span>
             <span className="text-center font-light text-sm">
@@ -132,7 +132,7 @@ const AboutProject = () => {
               real-time
             </span>
           </div>
-          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hover:shadow-xl transition">
+          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hoverEffect">
             <MdPeople className="w-10 h-10 text-yellow-400" />
             <span className="font-bold text-lg">Triple Ride Detection</span>
             <span className="text-center font-light text-sm">
@@ -140,7 +140,7 @@ const AboutProject = () => {
               passengers
             </span>
           </div>
-          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hover:shadow-xl transition">
+          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hoverEffect">
             <RiMotorbikeFill className="w-10 h-10 text-blue-400" />
             <span className="font-bold text-lg">License Plate Recognition</span>
             <span className="text-center font-light text-sm">
@@ -148,7 +148,7 @@ const AboutProject = () => {
               vehicles
             </span>
           </div>
-          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hover:shadow-xl transition">
+          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hoverEffect">
             <LuBrain className="w-10 h-10 text-green-400" />
             <span className="font-bold text-lg">AI-Powered Analysis</span>
             <span className="text-center font-light text-sm">
@@ -156,7 +156,7 @@ const AboutProject = () => {
               detection
             </span>
           </div>
-          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hover:shadow-xl transition">
+          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hoverEffect">
             <MdOutlineAccessTime className="w-10 h-10 text-violet-400" />
             <span className="font-bold text-lg">Real-time Processing</span>
             <span className="text-center font-light text-sm">
@@ -164,7 +164,7 @@ const AboutProject = () => {
               notifications
             </span>
           </div>
-          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hover:shadow-xl transition">
+          <div className="flex flex-col gap-2 items-center border border-gray-200 rounded-lg p-4 shadow-lg hoverEffect transition">
             <LiaDotCircleSolid className="w-10 h-10 text-orange-400" />
             <span className="font-bold text-lg">High Accuracy</span>
             <span className="text-center font-light text-sm">
