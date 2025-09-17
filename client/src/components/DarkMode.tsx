@@ -14,11 +14,11 @@ export default function Dark() {
       >
         {theme === "dark" ? (
           <div className="hoverEffect text-[26px] font-bold ">
-            <FaRegMoon />
+            <FaRegMoon className="text-green-400" />
           </div>
         ) : (
           <div className=" hoverEffect text-[26px] font-bold">
-            <BiSun />
+            <BiSun className="text-green-400" />
           </div>
         )}
       </button>

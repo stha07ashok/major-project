@@ -11,7 +11,7 @@ const Navbar = () => {
       <div className="flex justify-between px-10 py-4">
         <Link href="/" className="flex gap-3 cursor-pointer">
           <div className="h-9 my-1">
-            <IoCameraOutline className="h-9 w-9" />
+            <IoCameraOutline className="h-9 w-9 text-green-200 border rounded-full p-1 bg-blue-700" />
           </div>
           <div className="h-9 ">
             <div className="font-bold">TrafficWatch AI</div>
@@ -26,7 +26,7 @@ const Navbar = () => {
             className="font-bold hover:underline flex gap-1 items-center group hover:scale-105 transition-transform cursor-pointer"
           >
             <div>
-              <RxDashboard />
+              <RxDashboard className="text-green-400" />
             </div>
             Dashboard
           </Link>
@@ -35,14 +35,14 @@ const Navbar = () => {
             className="font-bold hover:underline flex gap-1 items-center group hover:scale-105 transition-transform cursor-pointer"
           >
             <div>
-              <LuBrain />
+              <LuBrain className="text-green-400" />
             </div>
             About Project
           </Link>
           <Dark />
           <Link
             href="/login"
-            className="font-bold border-2 rounded-full px-3 py-1 shadow-lg hover:scale-105 transition-transform cursor-pointer"
+            className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg hover:scale-105 transition-transform cursor-pointer"
           >
             login
           </Link>

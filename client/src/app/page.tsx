@@ -14,34 +14,34 @@ export default function Page() {
               <span className="font-light">1,247</span>
             </div>
             <div>
-              <FaRegEye className="w-8 h-5" />
+              <FaRegEye className="w-9 h-8 text-blue-700" />
             </div>
           </div>
           <div className="border border-gray-200 hoverEffect shadow-lg w-full rounded-full p-4 flex justify-between items-center">
             <div className="flex flex-col gap-1">
               <span className="font-bold text-md">Helmet Violations</span>
-              <span className="font-light">1,247</span>
+              <span className="font-light">23</span>
             </div>
             <div>
-              <CgDanger className="w-8 h-5" />
+              <CgDanger className="w-9 h-8 text-red-700" />
             </div>
           </div>
           <div className="border border-gray-200 hoverEffect shadow-lg w-full rounded-full p-4 flex justify-between items-center">
             <div className="flex flex-col gap-1">
               <span className="font-bold text-md">Triple Ride Violations</span>
-              <span className="font-light">1,247</span>
+              <span className="font-light">15</span>
             </div>
             <div>
-              <MdPeople className="w-8 h-5" />
+              <MdPeople className="w-9 h-8 text-yellow-400" />
             </div>
           </div>
           <div className="border border-gray-200 hoverEffect shadow-lg w-full rounded-full p-4 flex justify-between items-center">
             <div className="flex flex-col gap-1">
               <span className="font-bold text-md">License plates Read</span>
-              <span className="font-light">1,247</span>
+              <span className="font-light">829</span>
             </div>
             <div>
-              <RiMotorbikeFill className="w-8 h-5" />
+              <RiMotorbikeFill className="w-9 h-8 text-green-400" />
             </div>
           </div>
         </div>

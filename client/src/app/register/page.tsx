@@ -4,14 +4,13 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
-import Link from "next/link";
 
 type FormData = {
   firstName: string;
   lastName: string;
 };
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -35,7 +34,7 @@ const LoginPage = () => {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="text-2xl font-bold text-center mb-6"
         >
-          Login
+          Register
         </motion.h2>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-6">
@@ -83,24 +82,21 @@ const LoginPage = () => {
             )}
           </div>
 
-          {/* Forgot password + Create account */}
-          <div className="flex justify-between text-sm">
-            <Link href="/register" className="hover:underline">
-              Create new account
-            </Link>
-            <a href="/forgot-password" className=" hover:underline">
-              Forgot password?
+          <div className="flex gap-2 text-sm">
+            <span>Have an account?</span>
+            <a href="/register" className="hover:underline">
+              Login
             </a>
           </div>
 
-          {/* Login button */}
+          {/* register button */}
           <motion.button
             type="submit"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-white font-semibold shadow-md hover:bg-indigo-700 transition"
           >
-            Login
+            Register
           </motion.button>
 
           {/* Divider */}
@@ -110,7 +106,7 @@ const LoginPage = () => {
             <div className="flex-grow h-px bg-gray-300" />
           </div>
 
-          {/* Google login */}
+          {/* Google register */}
           <motion.button
             type="button"
             whileHover={{ scale: 1.05 }}
@@ -118,7 +114,7 @@ const LoginPage = () => {
             className="flex items-center justify-center gap-2 w-full rounded-lg border border-gray-300 px-4 py-2  font-medium shadow-sm  transition"
             onClick={() => console.log("Login with Google")}
           >
-            <FaGoogle className="text-red-500" /> Login with Google
+            <FaGoogle className="text-red-500" /> Register with Google
           </motion.button>
         </form>
       </motion.div>
@@ -126,4 +122,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
