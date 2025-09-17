@@ -92,28 +92,28 @@ export default function Page() {
       <div className="flex flex-col gap-6">
         {/* Top Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-3">
-          <div className="border border-gray-200 hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
+          <div className="border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
             <div className="flex flex-col gap-1">
               <span className="font-bold text-md">Total Detections Today</span>
               <span className="font-light">1,247</span>
             </div>
             <FaRegEye className="w-8 h-8 text-blue-700" />
           </div>
-          <div className="border border-gray-200 hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
+          <div className="border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
             <div className="flex flex-col gap-1">
               <span className="font-bold text-md">Helmet Violations</span>
               <span className="font-light">23</span>
             </div>
             <CgDanger className="w-8 h-8 text-red-400" />
           </div>
-          <div className="border border-gray-200 hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
+          <div className="border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
             <div className="flex flex-col gap-1">
               <span className="font-bold text-md">Triple Ride Violations</span>
               <span className="font-light">15</span>
             </div>
             <MdPeople className="w-8 h-8 text-yellow-400" />
           </div>
-          <div className="border border-gray-200 hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
+          <div className="border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] hoverEffect shadow-lg rounded-full p-4 flex justify-between items-center">
             <div className="flex flex-col gap-1">
               <span className="font-bold text-md">License plates Read</span>
               <span className="font-light">829</span>
@@ -123,7 +123,7 @@ export default function Page() {
         </div>
 
         {/* System Status */}
-        <div className="flex flex-col gap-3 border border-gray-200 rounded-lg p-6 shadow-lg">
+        <div className="flex flex-col gap-3 border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] rounded-lg p-6 shadow-lg">
           <div className="flex gap-2 items-center mb-4">
             <LuShield className="w-10 h-10 text-red-400" />
             <span className="font-bold text-2xl">System Status</span>
@@ -133,7 +133,7 @@ export default function Page() {
               (status, idx) => (
                 <div key={idx} className="flex flex-col gap-1 items-center">
                   <span>{status}</span>
-                  <span className="border border-gray-200 rounded-full w-full flex items-center shadow-lg font-bold justify-center px-3 py-1 bg-blue-500 text-white">
+                  <span className="border border-gray-200 dark:border-gray-600  rounded-full w-full flex items-center shadow-lg font-bold justify-center px-3 py-1 bg-blue-500 text-white">
                     {status === "Camera Status"
                       ? "Online"
                       : status === "AI Model"
@@ -151,7 +151,7 @@ export default function Page() {
         {/* Live Feed & Violations */}
         <div className="flex flex-col lg:flex-row gap-3">
           {/* Live Feed */}
-          <div className="flex flex-col gap-3 border border-gray-200 rounded-lg p-6 shadow-lg flex-1">
+          <div className="flex flex-col gap-3 border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] rounded-lg p-6 shadow-lg flex-1">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
               <div className="flex gap-3 items-center">
                 <IoCameraOutline className="h-9 w-9 text-green-200 border rounded-lg p-1 bg-blue-700" />
@@ -197,7 +197,7 @@ export default function Page() {
           </div>
 
           {/* Violation Alerts */}
-          <div className="flex flex-col border border-gray-200 rounded-lg p-6 shadow-lg gap-2 h-[500px] lg:h-auto lg:max-h-[600px] w-full lg:w-[40%]">
+          <div className="flex flex-col border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] rounded-lg p-6 shadow-lg gap-2 h-[500px] lg:h-auto lg:max-h-[600px] w-full lg:w-[40%]">
             <div className="flex gap-2 items-center">
               <LuTriangleAlert className="h-7 w-7 text-green-500" />
               <span className="font-bold text-xl">Violation Alert</span>
@@ -251,7 +251,7 @@ export default function Page() {
         {/* Recorded Video & Violations */}
         <div className="flex flex-col lg:flex-row gap-3 mt-6">
           {/* Recorded Video */}
-          <div className="flex flex-col gap-3 border border-gray-200 rounded-lg p-6 shadow-lg flex-1">
+          <div className="flex flex-col gap-3 border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] rounded-lg p-6 shadow-lg flex-1">
             <div className="flex gap-3 items-center mb-4">
               <IoCameraOutline className="h-9 w-9 text-green-200 border rounded-lg p-1 bg-blue-700" />
               <span className="font-bold text-xl">Recorded Video</span>
@@ -315,7 +315,7 @@ export default function Page() {
           </div>
 
           {/* Violations List */}
-          <div className="flex flex-col border border-gray-200 rounded-lg p-6 shadow-lg gap-2 h-[500px] lg:h-auto lg:max-h-[600px] w-full lg:w-[40%]">
+          <div className="flex flex-col border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] rounded-lg p-6 shadow-lg gap-2 h-[500px] lg:h-auto lg:max-h-[600px] w-full lg:w-[40%]">
             <div className="flex gap-2 items-center">
               <LuTriangleAlert className="h-7 w-7 text-yellow-500" />
               <span className="font-bold text-xl">Recorded Violations</span>
