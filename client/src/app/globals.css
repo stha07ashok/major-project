@@ -50,5 +50,5 @@ h6 {
 }
 
 .hoverEffect {
-  @apply transition-all duration-300 cursor-pointer ease-in-out scale-100 hover:scale-125;
+  @apply transition-all duration-300 cursor-pointer ease-in-out scale-100 hover:scale-105;
 }
