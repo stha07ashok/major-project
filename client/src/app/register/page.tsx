@@ -21,7 +21,7 @@ const RegisterPage = () => {
   const onSubmit = handleSubmit((data) => console.log(data));
 
   return (
-    <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8 bg-gray-50 dark:bg-[#1a252d]">
+    <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8 ">
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
