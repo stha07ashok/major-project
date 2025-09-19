@@ -50,7 +50,7 @@ const ResetPasswordPage = () => {
       });
 
       router.push("/login");
-    } catch (error: any) {
+    } catch (error) {
       const err = error as ApiError;
       Swal.fire({
         icon: "error",
