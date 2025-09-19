@@ -13,7 +13,7 @@ type FormData = {
   password: string;
 };
 
-// Proper API error type
+
 interface ApiError {
   response?: {
     data?: {

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://major-project-gfq0.onrender.com/api",
+  baseURL: "http://localhost:4000/api",
   withCredentials: true,
 });
 
