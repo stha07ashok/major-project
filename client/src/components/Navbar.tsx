@@ -1,14 +1,42 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoCameraOutline } from "react-icons/io5";
 import Dark from "./DarkMode";
 import { RxDashboard } from "react-icons/rx";
 import { LuBrain } from "react-icons/lu";
 import Link from "next/link";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
+import Image from "next/image";
+
+interface User {
+  name: string;
+  email: string;
+  profilePicture?: string;
+}
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
+    // update if auth changes
+    const handleAuthChange = () => {
+      const updatedUser = localStorage.getItem("user");
+      if (updatedUser) {
+        setUser(JSON.parse(updatedUser));
+      } else {
+        setUser(null);
+      }
+    };
+
+    window.addEventListener("authChange", handleAuthChange);
+    return () => window.removeEventListener("authChange", handleAuthChange);
+  }, []);
 
   return (
     <div className="border-b bg-white dark:border-gray-600 dark:bg-[#1a252d] border-gray-200 w-full shadow-lg fixed top-0 z-50">
@@ -45,12 +73,25 @@ const Navbar = () => {
             About Project
           </Link>
           <Dark />
-          <Link
-            href="/login"
-            className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg hover:scale-105 transition-transform"
-          >
-            Login
-          </Link>
+
+          {user ? (
+            <Link href="/profile">
+              <Image
+                src={user.profilePicture || "/images/default-avatar.png"}
+                alt="Profile"
+                width={36}
+                height={36}
+                className="rounded-full border border-green-400 cursor-pointer hover:scale-105 transition-transform"
+              />
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg hover:scale-105 transition-transform"
+            >
+              Login
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -84,13 +125,30 @@ const Navbar = () => {
             About Project
           </Link>
           <Dark />
-          <Link
-            href="/login"
-            className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg text-center"
-            onClick={() => setMenuOpen(false)}
-          >
-            Login
-          </Link>
+          {user ? (
+            <Link
+              href="/profile"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2"
+            >
+              <Image
+                src={user.profilePicture || "/default-avatar.png"}
+                alt="Profile"
+                width={36}
+                height={36}
+                className="rounded-lg p-1 border border-green-400"
+              />
+              <span className="font-bold">{user.name || "Profile"}</span>
+            </Link>
+          ) : (
+            <Link
+              href="/login"
+              className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg text-center"
+              onClick={() => setMenuOpen(false)}
+            >
+              Login
+            </Link>
+          )}
         </div>
       )}
     </div>
