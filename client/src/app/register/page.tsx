@@ -13,7 +13,16 @@ type FormData = {
   password: string;
 };
 
-const RegisterPage = () => {
+// Proper API error type
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+const RegisterPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [emailForVerification, setEmailForVerification] = useState("");
@@ -25,11 +34,14 @@ const RegisterPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
+  // Register form submit
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
-      await api.post("/register", data); // Send email + save user temporarily
+      await api.post("/register", data);
       setEmailForVerification(data.email);
       setShowVerificationInput(true);
+
       Swal.fire({
         icon: "info",
         title: "Verify Email",
@@ -40,12 +52,11 @@ const RegisterPage = () => {
         showConfirmButton: false,
       });
     } catch (error) {
+      const err = error as ApiError;
       Swal.fire({
         icon: "error",
         title: "Registration Failed",
-        text:
-          (error as any).response?.data?.message ||
-          "Something went wrong. Try again.",
+        text: err.response?.data?.message || "Something went wrong. Try again.",
         timer: 2000,
         timerProgressBar: true,
         position: "top",
@@ -54,21 +65,31 @@ const RegisterPage = () => {
     }
   };
 
+  // Verification submit
   const handleVerificationSubmit = async () => {
-    try {
-      const res = await api.post("/verify-email", {
-        email: emailForVerification,
-        code: verificationCode,
+    if (!verificationCode || verificationCode.length !== 6) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Code",
+        text: "Please enter a 6-digit verification code.",
+        timer: 2000,
+        timerProgressBar: true,
+        position: "top",
+        showConfirmButton: false,
       });
+      return;
+    }
 
-      console.log(res.data);
-
-      // Navigate user to login page
-      router.push("/login");
+    try {
+      const res: { data: { success: boolean; message: string } } =
+        await api.post("/verify-email", {
+          email: emailForVerification,
+          code: verificationCode,
+        });
 
       Swal.fire({
         icon: "success",
-        title: "User Verified Successfully!",
+        title: res.data.message || "User Verified Successfully!",
         timer: 1500,
         timerProgressBar: true,
         position: "top",
@@ -77,12 +98,11 @@ const RegisterPage = () => {
 
       router.push("/login");
     } catch (error) {
+      const err = error as ApiError;
       Swal.fire({
         icon: "error",
         title: "Verification Failed",
-        text:
-          (error as any).response?.data?.message ||
-          "Invalid verification code.",
+        text: err.response?.data?.message || "Invalid verification code.",
         timer: 2000,
         timerProgressBar: true,
         position: "top",
@@ -92,7 +112,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8 ">
+    <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -107,6 +127,7 @@ const RegisterPage = () => {
         >
           Register
         </motion.h2>
+
         {!showVerificationInput ? (
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -174,7 +195,6 @@ const RegisterPage = () => {
               </a>
             </div>
 
-            {/* Register button */}
             <motion.button
               type="submit"
               whileHover={{ scale: 1.03 }}
@@ -193,7 +213,7 @@ const RegisterPage = () => {
               <div className="flex-grow h-px bg-gray-300 dark:bg-gray-600" />
             </div>
 
-            {/* Google register */}
+            {/* Google Register */}
             <motion.button
               type="button"
               whileHover={{ scale: 1.03 }}
@@ -219,7 +239,7 @@ const RegisterPage = () => {
             />
             <button
               onClick={handleVerificationSubmit}
-              className="w-full bg-green-500 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition duration-200 px-4 "
+              className="w-full bg-green-500 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition duration-200 px-4"
             >
               Verify and Complete Registration
             </button>
