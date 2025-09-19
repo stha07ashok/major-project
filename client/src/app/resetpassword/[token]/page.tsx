@@ -5,6 +5,14 @@ import { useParams, useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import api from "../../api/user/routes";
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 const ResetPasswordPage = () => {
   const { token } = useParams();
   const router = useRouter();
@@ -43,14 +51,15 @@ const ResetPasswordPage = () => {
 
       router.push("/login");
     } catch (error: any) {
+      const err = error as ApiError;
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: error.response?.data?.message || "Failed to reset password.",
-        position: "top",
+        title: "Password Reset Failed",
+        text: err.response?.data?.message || "Something went wrong. Try again.",
         timer: 2000,
-        showConfirmButton: false,
         timerProgressBar: true,
+        position: "top",
+        showConfirmButton: false,
       });
     }
   };

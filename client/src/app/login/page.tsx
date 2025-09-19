@@ -95,15 +95,17 @@ const LoginPage: React.FC = () => {
           timerProgressBar: true,
         });
       } catch (error) {
+        const err = error as ApiError;
+
         Swal.fire({
           icon: "error",
-          title: "Error",
+          title: "Login Failed",
           text:
-            (error as any)?.response?.data?.message ||
+            err.response?.data?.message ||
             "Something went wrong, please try again.",
           position: "top",
           showConfirmButton: false,
-          timer: 2000,
+          timer: 1000,
           timerProgressBar: true,
         });
       }
