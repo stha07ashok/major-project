@@ -14,7 +14,15 @@ type FormData = {
   password: string;
 };
 
-const LoginPage = () => {
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
+const LoginPage: React.FC = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -23,6 +31,7 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       const res = await api.post("/login", data);
@@ -30,8 +39,7 @@ const LoginPage = () => {
       localStorage.setItem("authToken", res.data.authToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      router.push("/");
-
+      // Notify app of login change
       window.dispatchEvent(new CustomEvent("authChange", { detail: true }));
 
       Swal.fire({
@@ -43,12 +51,16 @@ const LoginPage = () => {
         timer: 1000,
         timerProgressBar: true,
       });
+
+      router.push("/");
     } catch (error) {
+      const err = error as ApiError;
+
       Swal.fire({
         icon: "error",
         title: "Login Failed",
         text:
-          (error as any)?.response?.data?.message ||
+          err.response?.data?.message ||
           "Something went wrong, please try again.",
         position: "top",
         showConfirmButton: false,
@@ -59,7 +71,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(160vh-450px)] px-4 py-22  flex items-center justify-center sm:px-6 lg:px-8 ">
+    <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -127,7 +139,7 @@ const LoginPage = () => {
             )}
           </div>
 
-          {/* Forgot password + Create account */}
+          {/* Links */}
           <div className="flex flex-col sm:flex-row justify-between text-sm sm:text-base gap-2 sm:gap-0">
             <Link
               href="/register"
