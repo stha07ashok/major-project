@@ -14,7 +14,7 @@ const violations = [
     camera: "Camera 01 - Main Road",
     plate: "MTF 9233",
     confidence: "91.4%",
-    image: "/images/violation1.jpg",
+    image: "/images/data.png",
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ const violations = [
     camera: "Camera 01 - Main Road",
     plate: "SKQ 4501",
     confidence: "82.1%",
-    image: "/images/violation2.jpg",
+    image: "/images/data.png",
   },
   {
     id: 3,
@@ -34,7 +34,7 @@ const violations = [
     camera: "Camera 01 - Main Road",
     plate: "UND 8605",
     confidence: "81.9%",
-    image: "/images/violation3.jpg",
+    image: "/images/data.png",
   },
   {
     id: 4,
@@ -44,7 +44,7 @@ const violations = [
     camera: "Camera 01 - Main Road",
     plate: "MTF 9233",
     confidence: "83.2%",
-    image: "/images/violation4.jpg",
+    image: "/images/data.png",
   },
 ];
 
