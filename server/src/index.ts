@@ -11,7 +11,17 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://major-project-gules-seven.vercel.app/",
+      "https://major-project-git-main-ashok-shresthas-projects-d61f8c93.vercel.app/",
+      "https://major-project-r4ltt2fmb-ashok-shresthas-projects-d61f8c93.vercel.app/ ",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

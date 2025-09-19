@@ -70,6 +70,46 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    const { value: email } = await Swal.fire({
+      title: "Enter your email",
+      input: "email",
+      inputLabel: "We'll send you a password reset link",
+      inputPlaceholder: "example@gmail.com",
+      showCancelButton: true,
+      confirmButtonText: "Send",
+      cancelButtonText: "Cancel",
+    });
+
+    if (email) {
+      try {
+        const res = await api.post("/forgetpassword", { email });
+
+        Swal.fire({
+          icon: "success",
+          title: "Reset Link Sent",
+          text: res.data.message,
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text:
+            (error as any)?.response?.data?.message ||
+            "Something went wrong, please try again.",
+          position: "top",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      }
+    }
+  };
+
   return (
     <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8">
       <motion.div
@@ -147,12 +187,12 @@ const LoginPage: React.FC = () => {
             >
               Create new account
             </Link>
-            <Link
-              href="/forgot-password"
-              className="hover:underline text-indigo-600 dark:text-indigo-400"
+            <p
+              onClick={handleForgotPassword}
+              className="hover:underline text-indigo-600 dark:text-indigo-400 cursor-pointer"
             >
               Forgot password?
-            </Link>
+            </p>
           </div>
 
           {/* Login button */}
