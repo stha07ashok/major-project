@@ -1,17 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import api from "../api/user/routes";
+import Swal from "sweetalert2";
 
 type FormData = {
-  firstName: string;
-  lastName: string;
+  email: string;
+  password: string;
 };
 
 const LoginPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -19,7 +23,40 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
-  const onSubmit = handleSubmit((data) => console.log(data));
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    try {
+      const res = await api.post("/login", data);
+
+      localStorage.setItem("authToken", res.data.authToken);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      router.push("/");
+
+      window.dispatchEvent(new CustomEvent("authChange", { detail: true }));
+
+      Swal.fire({
+        icon: "success",
+        title: "Login Successful!",
+        text: "You have successfully logged in.",
+        position: "top",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text:
+          (error as any)?.response?.data?.message ||
+          "Something went wrong, please try again.",
+        position: "top",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+      });
+    }
+  };
 
   return (
     <div className="min-h-[calc(160vh-450px)] px-4 py-22  flex items-center justify-center sm:px-6 lg:px-8 ">
@@ -38,7 +75,10 @@ const LoginPage = () => {
           Login
         </motion.h2>
 
-        <form onSubmit={onSubmit} className="flex flex-col gap-5 sm:gap-6">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-5 sm:gap-6"
+        >
           {/* Email */}
           <div>
             <label className="block text-sm sm:text-base font-medium text-gray-700 dark:text-gray-200">
@@ -47,13 +87,13 @@ const LoginPage = () => {
             <motion.input
               whileFocus={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
-              {...register("firstName", { required: "Email is required" })}
+              {...register("email", { required: "Email is required" })}
               className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 sm:py-3 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none bg-white dark:bg-[#28343d] text-gray-900 dark:text-gray-100"
               placeholder="Enter your email"
             />
-            {errors.firstName && (
+            {errors.email && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.firstName.message}
+                {errors.email.message}
               </p>
             )}
           </div>
@@ -68,7 +108,7 @@ const LoginPage = () => {
                 type={showPassword ? "text" : "password"}
                 whileFocus={{ scale: 1.02 }}
                 transition={{ duration: 0.2 }}
-                {...register("lastName", { required: "Password is required" })}
+                {...register("password", { required: "Password is required" })}
                 className="mt-1 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 sm:py-3 pr-10 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 outline-none bg-white dark:bg-[#28343d] text-gray-900 dark:text-gray-100"
                 placeholder="Enter your password"
               />
@@ -80,9 +120,9 @@ const LoginPage = () => {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-            {errors.lastName && (
+            {errors.password && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.lastName.message}
+                {errors.password.message}
               </p>
             )}
           </div>
