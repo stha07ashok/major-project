@@ -67,6 +67,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         verificationToken: createdUser.verificationToken,
         createdAt: createdUser.createdAt,
         updatedAt: createdUser.updatedAt,
+        lastlogin: createdUser.lastLogin,
       },
     });
   } catch (error: any) {
@@ -116,6 +117,7 @@ export const verifyEmail: RequestHandler = async (
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         password: undefined,
+        lastlogin: user.lastLogin,
       },
     });
   } catch (error) {
@@ -158,6 +160,7 @@ export const login: RequestHandler = async (
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
         password: undefined,
+        lastlogin: user.lastLogin,
       },
     });
   } catch (error) {
