@@ -17,6 +17,14 @@ interface User {
   createdAt?: string;
 }
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 const ProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
@@ -75,11 +83,14 @@ const ProfilePage = () => {
         timerProgressBar: true,
       });
     } catch (error) {
-      console.error("Logout failed", error);
+      const err = error as ApiError;
+
       Swal.fire({
         icon: "error",
         title: "Logout Failed",
-        text: "Something went wrong, please try again.",
+        text:
+          err.response?.data?.message ||
+          "Something went wrong, please try again.",
         position: "top",
         showConfirmButton: false,
         timer: 1000,
