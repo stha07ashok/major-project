@@ -81,12 +81,12 @@ const RecordedViolations = () => {
   return (
     <div className="flex flex-col lg:flex-row gap-3 mt-6">
       {/* Recorded Video */}
-      <div className="flex flex-col gap-3 border border-gray-200 dark:border-gray-600 dark:bg-[#1a252d] rounded-lg p-6 shadow-lg flex-1">
+      <div className="flex flex-col gap-3 border border-gray-200  dark:border-gray-700 dark:bg-[#1a252d] rounded-lg p-6 shadow-lg flex-1">
         <div className="flex gap-3 items-center mb-4">
-          <IoCameraOutline className="h-9 w-9 text-green-200 border rounded-lg p-1 bg-blue-700" />
+          <IoCameraOutline className="h-9 w-9 text-green-200 border border-gray-300 dark:border-gray-700 rounded-lg p-1 bg-blue-700" />
           <span className="font-bold text-xl">Recorded Video</span>
         </div>
-        <div className="w-full h-64 sm:h-80 md:h-96 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-lg border border-gray-300">
+        <div className="w-full h-64 sm:h-80 md:h-96 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700">
           {videoUrl ? (
             <video
               ref={videoRef}
@@ -154,7 +154,7 @@ const RecordedViolations = () => {
           {violations.map((v) => (
             <div
               key={v.id}
-              className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 shadow-lg"
+              className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg"
             >
               <img
                 src={v.image}

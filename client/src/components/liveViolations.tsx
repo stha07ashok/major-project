@@ -59,19 +59,21 @@ const LiveViolations = () => {
             <span className="font-bold text-xl">Live Video Feed</span>
           </div>
           <div className="flex flex-wrap gap-3 items-center">
-            <div className="flex gap-1 items-center border border-gray-200 rounded-full px-2 py-1 shadow-lg hoverEffect">
+            <div className="flex gap-1 items-center border border-gray-200 dark:border-gray-700 rounded-full px-2 py-1 shadow-lg hoverEffect">
               <CgLivePhoto className="h-7 w-7 text-green-500" />
               <span className="font-bold text-xl">Live</span>
             </div>
-            <CiPause1 className="h-9 w-9 text-green-500 border border-gray-200 rounded-lg p-1 hoverEffect shadow-lg" />
-            <div className="flex gap-1 items-center border border-gray-200 rounded-full px-2 py-1 shadow-lg hoverEffect cursor-pointer">
+            <CiPause1 className="h-9 w-9 text-green-500 border border-gray-200 dark:border-gray-700 rounded-lg p-1 hoverEffect shadow-lg" />
+            <div className="flex gap-1 items-center border border-gray-200 dark:border-gray-700 rounded-full px-2 py-1 shadow-lg hoverEffect cursor-pointer">
               <CiSettings className="h-7 w-7 text-green-500" />
-              <span className="font-bold text-xl">Stop Detection</span>
+              <span className="font-bold text-xl dark:border-gray-700">
+                Stop Detection
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="w-full h-64 sm:h-80 md:h-96 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-lg border border-gray-300">
+        <div className="w-full h-64 sm:h-80 md:h-96 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-700">
           <span className="text-gray-400 text-lg">
             Live CCTV Footage Placeholder
           </span>
@@ -107,7 +109,7 @@ const LiveViolations = () => {
           {violations.map((v) => (
             <div
               key={v.id}
-              className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 shadow-lg"
+              className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-700 shadow-lg"
             >
               <img
                 src={v.image}
