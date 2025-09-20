@@ -25,6 +25,14 @@ interface ApiError {
   };
 }
 
+interface ProfileFormData {
+  fullName?: string;
+  phoneNumber?: string;
+  dateOfBirth?: string;
+  address?: string;
+  email?: string;
+}
+
 const ProfilePage = () => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
@@ -34,14 +42,21 @@ const ProfilePage = () => {
   const handleProfilePictureChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log("Profile picture change event:", event);
+    if (!event.target.files?.length) return;
+    setUploading(true);
+    try {
+      const file = event.target.files[0];
+      console.log("Uploading file:", file);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: {},
   } = useForm();
 
   useEffect(() => {
@@ -60,7 +75,7 @@ const ProfilePage = () => {
     }
   }, [reset]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: ProfileFormData) => {
     console.log("Submitting profile update with data:", data);
   };
 
