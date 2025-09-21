@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Swal from "sweetalert2";
 import api from "../../api/user/routes";
+import toast, { Toaster } from "react-hot-toast";
 
 interface ApiError {
   response?: {
@@ -20,18 +20,23 @@ const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const getToastStyle = () => ({
+    background: document.documentElement.classList.contains("dark")
+      ? "#1f2b34"
+      : "#fff",
+    color: document.documentElement.classList.contains("dark")
+      ? "#fff"
+      : "#000",
+  });
+
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      Swal.fire({
-        icon: "warning",
-        title: "Passwords don't match!",
-        text: "Please make sure both fields match.",
-        position: "top",
-        timer: 2000,
-        showConfirmButton: false,
-        timerProgressBar: true,
+      toast.error("Passwords don't match! Please ensure both fields match.", {
+        style: getToastStyle(),
+        position: "top-center",
+        duration: 3000,
       });
       return;
     }
@@ -39,33 +44,31 @@ const ResetPasswordPage = () => {
     try {
       const res = await api.post(`/resetpassword/${token}`, { password });
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: res.data.message || "Password reset successful.",
-        position: "top",
-        timer: 1500,
-        showConfirmButton: false,
-        timerProgressBar: true,
+      toast.success(res.data.message || "Password reset successful!", {
+        style: getToastStyle(),
+        position: "top-center",
+        duration: 3000,
       });
 
       router.push("/login");
     } catch (error) {
       const err = error as ApiError;
-      Swal.fire({
-        icon: "error",
-        title: "Password Reset Failed",
-        text: err.response?.data?.message || "Something went wrong. Try again.",
-        timer: 2000,
-        timerProgressBar: true,
-        position: "top",
-        showConfirmButton: false,
-      });
+      toast.error(
+        err.response?.data?.message || "Password reset failed. Try again.",
+        {
+          style: getToastStyle(),
+          position: "top-center",
+          duration: 3000,
+        }
+      );
     }
   };
 
   return (
-    <div className="min-h-screen text-2xl  flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center text-2xl">
+      {/* Toaster for notifications */}
+      <Toaster />
+
       <div className="max-w-md w-full p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1f2b34] space-y-6 mt-10">
         <form onSubmit={handleReset} className="space-y-4">
           <h2 className="text-4xl font-bold text-center text-green-600 border-b border-gray-200 pb-4 mb-4 shadow-md">
@@ -73,7 +76,7 @@ const ResetPasswordPage = () => {
           </h2>
 
           <div>
-            <label htmlFor="password" className="block mb-1 font-medium ">
+            <label htmlFor="password" className="block mb-1 font-medium">
               New Password:
             </label>
             <input
@@ -88,10 +91,7 @@ const ResetPasswordPage = () => {
           </div>
 
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block mb-1 font-medium "
-            >
+            <label htmlFor="confirmPassword" className="block mb-1 font-medium">
               Confirm Password:
             </label>
             <input
