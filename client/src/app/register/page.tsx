@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import api from "../api/user/routes";
 import toast, { Toaster } from "react-hot-toast";
+import { signIn, useSession } from "next-auth/react";
 
 type FormData = {
   email: string;
@@ -33,6 +34,32 @@ const RegisterPage: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
+  const { data: session } = useSession();
+
+  // Handle NextAuth session (Google login)
+  useEffect(() => {
+    if (session?.accessToken) {
+      localStorage.setItem("authToken", session.accessToken);
+      localStorage.setItem("user", JSON.stringify(session.user));
+      window.dispatchEvent(new CustomEvent("authChange", { detail: true }));
+
+      toast.success("Login Successful!", {
+        style: {
+          background: document.documentElement.classList.contains("dark")
+            ? "#1f2b34"
+            : "#fff",
+          color: document.documentElement.classList.contains("dark")
+            ? "#fff"
+            : "#000",
+        },
+        position: "top-center",
+        duration: 3000,
+      });
+
+      router.push("/");
+    }
+  }, [session, router]);
 
   // Helper function for toast styling
   const getToastStyle = () => ({
@@ -99,6 +126,14 @@ const RegisterPage: React.FC = () => {
         duration: 3000,
       });
     }
+  };
+
+  // Google login
+  const handleLoginWithGoogle = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    await signIn("google");
   };
 
   return (
@@ -212,7 +247,7 @@ const RegisterPage: React.FC = () => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="flex items-center justify-center gap-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 sm:py-3 font-medium shadow-sm transition bg-white dark:bg-[#28343d] text-gray-900 dark:text-gray-100 hoverEffect"
-              onClick={() => console.log("Register with Google")}
+              onClick={handleLoginWithGoogle}
             >
               <FaGoogle className="text-red-500" /> Register with Google
             </motion.button>
