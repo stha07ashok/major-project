@@ -16,6 +16,7 @@ interface User {
   profilePicture?: string;
   lastlogin?: string;
   createdAt?: string;
+  image?: string;
 }
 
 interface ApiError {
@@ -145,7 +146,7 @@ const ProfilePage = () => {
       {user && (
         <div className="flex flex-col items-center m-6">
           <Image
-            src={user.profilePicture || "/images/default-avatar.png"}
+            src={user.image || "/images/default-avatar.png"}
             alt="Profile"
             width={140}
             height={140}

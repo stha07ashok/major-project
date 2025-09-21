@@ -14,6 +14,7 @@ interface User {
   name?: string | null;
   email?: string | null;
   profilePicture?: string | null;
+  image?: string | null;
 }
 
 const Navbar = () => {
@@ -141,11 +142,11 @@ const Navbar = () => {
               className="flex items-center gap-2"
             >
               <Image
-                src={user.profilePicture || "/default-avatar.png"}
+                src={user.image || "/images/default-avatar.png"}
                 alt="Profile"
                 width={36}
                 height={36}
-                className="rounded-lg p-1 border border-green-400"
+                className="rounded-full p-1 border border-green-400"
               />
               <span className="font-bold">{user.name || "Profile"}</span>
             </Link>
