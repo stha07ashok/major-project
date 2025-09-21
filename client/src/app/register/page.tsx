@@ -6,13 +6,12 @@ import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import api from "../api/user/routes";
-import Swal from "sweetalert2";
+import toast, { Toaster } from "react-hot-toast";
 
 type FormData = {
   email: string;
   password: string;
 };
-
 
 interface ApiError {
   response?: {
@@ -35,6 +34,16 @@ const RegisterPage: React.FC = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+  // Helper function for toast styling
+  const getToastStyle = () => ({
+    background: document.documentElement.classList.contains("dark")
+      ? "#1f2b34"
+      : "#fff",
+    color: document.documentElement.classList.contains("dark")
+      ? "#fff"
+      : "#000",
+  });
+
   // Register form submit
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
@@ -42,25 +51,17 @@ const RegisterPage: React.FC = () => {
       setEmailForVerification(data.email);
       setShowVerificationInput(true);
 
-      Swal.fire({
-        icon: "info",
-        title: "Verify Email",
-        text: "A 6-digit code has been sent to your email. Please verify.",
-        timer: 2000,
-        timerProgressBar: true,
-        position: "top",
-        showConfirmButton: false,
+      toast("A 6-digit code has been sent to your email. Please verify.", {
+        style: getToastStyle(),
+        position: "top-center",
+        duration: 3000,
       });
     } catch (error) {
       const err = error as ApiError;
-      Swal.fire({
-        icon: "error",
-        title: "Registration Failed",
-        text: err.response?.data?.message || "Something went wrong. Try again.",
-        timer: 2000,
-        timerProgressBar: true,
-        position: "top",
-        showConfirmButton: false,
+      toast.error(err.response?.data?.message || "Registration failed.", {
+        style: getToastStyle(),
+        position: "top-center",
+        duration: 3000,
       });
     }
   };
@@ -68,14 +69,10 @@ const RegisterPage: React.FC = () => {
   // Verification submit
   const handleVerificationSubmit = async () => {
     if (!verificationCode || verificationCode.length !== 6) {
-      Swal.fire({
-        icon: "warning",
-        title: "Invalid Code",
-        text: "Please enter a 6-digit verification code.",
-        timer: 2000,
-        timerProgressBar: true,
-        position: "top",
-        showConfirmButton: false,
+      toast("Please enter a 6-digit verification code.", {
+        style: getToastStyle(),
+        position: "top-center",
+        duration: 3000,
       });
       return;
     }
@@ -87,32 +84,28 @@ const RegisterPage: React.FC = () => {
           code: verificationCode,
         });
 
-      Swal.fire({
-        icon: "success",
-        title: res.data.message || "User Verified Successfully!",
-        timer: 1500,
-        timerProgressBar: true,
-        position: "top",
-        showConfirmButton: false,
+      toast.success(res.data.message || "User Verified Successfully!", {
+        style: getToastStyle(),
+        position: "top-center",
+        duration: 3000,
       });
 
       router.push("/login");
     } catch (error) {
       const err = error as ApiError;
-      Swal.fire({
-        icon: "error",
-        title: "Verification Failed",
-        text: err.response?.data?.message || "Invalid verification code.",
-        timer: 2000,
-        timerProgressBar: true,
-        position: "top",
-        showConfirmButton: false,
+      toast.error(err.response?.data?.message || "Invalid verification code.", {
+        style: getToastStyle(),
+        position: "top-center",
+        duration: 3000,
       });
     }
   };
 
   return (
     <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8">
+      {/* Toaster for rendering all toasts */}
+      <Toaster />
+
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}

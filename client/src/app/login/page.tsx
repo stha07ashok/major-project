@@ -7,8 +7,8 @@ import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import api from "../api/user/routes";
-import Swal from "sweetalert2";
 import { signIn, useSession } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
 
 type FormData = {
   email: string;
@@ -34,11 +34,26 @@ const LoginPage: React.FC = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+  // Handle NextAuth session (Google login)
   useEffect(() => {
     if (session?.accessToken) {
       localStorage.setItem("authToken", session.accessToken);
       localStorage.setItem("user", JSON.stringify(session.user));
       window.dispatchEvent(new CustomEvent("authChange", { detail: true }));
+
+      toast.success("Login Successful!", {
+        style: {
+          background: document.documentElement.classList.contains("dark")
+            ? "#1f2b34"
+            : "#fff",
+          color: document.documentElement.classList.contains("dark")
+            ? "#fff"
+            : "#000",
+        },
+        position: "top-center",
+        duration: 3000,
+      });
+
       router.push("/");
     }
   }, [session, router]);
@@ -50,76 +65,77 @@ const LoginPage: React.FC = () => {
 
       localStorage.setItem("authToken", res.data.authToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
-
       window.dispatchEvent(new CustomEvent("authChange", { detail: true }));
 
-      Swal.fire({
-        icon: "success",
-        title: "Login Successful!",
-        text: "You have successfully logged in.",
-        position: "top",
-        showConfirmButton: false,
-        timer: 1000,
-        timerProgressBar: true,
+      toast.success("Login Successful!", {
+        style: {
+          background: document.documentElement.classList.contains("dark")
+            ? "#1f2b34"
+            : "#fff",
+          color: document.documentElement.classList.contains("dark")
+            ? "#fff"
+            : "#000",
+        },
+        position: "top-center",
+        duration: 3000,
       });
 
       router.push("/");
     } catch (error) {
       const err = error as ApiError;
 
-      Swal.fire({
-        icon: "error",
-        title: "Login Failed",
-        text:
-          err.response?.data?.message ||
-          "Something went wrong, please try again.",
-        position: "top",
-        showConfirmButton: false,
-        timer: 1000,
-        timerProgressBar: true,
+      toast.error(err.response?.data?.message || "Login Failed", {
+        style: {
+          background: document.documentElement.classList.contains("dark")
+            ? "#1f2b34"
+            : "#fff",
+          color: document.documentElement.classList.contains("dark")
+            ? "#fff"
+            : "#000",
+        },
+        position: "top-center",
+        duration: 3000,
       });
     }
   };
 
   // Forgot password
   const handleForgotPassword = async () => {
-    const { value: email } = await Swal.fire({
-      title: "Enter your email",
-      input: "email",
-      inputLabel: "We'll send you a password reset link",
-      inputPlaceholder: "example@gmail.com",
-      showCancelButton: true,
-      confirmButtonText: "Send",
-      cancelButtonText: "Cancel",
-    });
-
+    const email = prompt("Enter your email to reset password:");
     if (email) {
       try {
         const res = await api.post("/forgetpassword", { email });
 
-        Swal.fire({
-          icon: "success",
-          title: "Reset Link Sent",
-          text: res.data.message,
-          position: "top",
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
+        toast.success(res.data.message || "Reset link sent!", {
+          style: {
+            background: document.documentElement.classList.contains("dark")
+              ? "#1f2b34"
+              : "#fff",
+            color: document.documentElement.classList.contains("dark")
+              ? "#fff"
+              : "#000",
+          },
+          position: "top-center",
+          duration: 3000,
         });
       } catch (error) {
         const err = error as ApiError;
 
-        Swal.fire({
-          icon: "error",
-          title: "Request Failed",
-          text:
-            err.response?.data?.message ||
-            "Something went wrong, please try again.",
-          position: "top",
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
-        });
+        toast.error(
+          err.response?.data?.message || "Failed to send reset link",
+          {
+            style: {
+              background: document.documentElement.classList.contains("dark")
+                ? "#1f2b34"
+                : "#fff",
+              color: document.documentElement.classList.contains("dark")
+                ? "#fff"
+                : "#000",
+            },
+            position: "top-center",
+            duration: 3000,
+          }
+        );
       }
     }
   };
@@ -134,6 +150,9 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8">
+      {/* Toaster */}
+      <Toaster />
+
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -149,7 +168,6 @@ const LoginPage: React.FC = () => {
           Login
         </motion.h2>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-5 sm:gap-6"
