@@ -5,6 +5,7 @@ import api from "../api/user/routes";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 interface User {
   fullName?: string;
@@ -81,13 +82,41 @@ const ProfilePage = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post("/logout", {}, { withCredentials: true });
-      router.push("/");
+      //  Logout from backend (if your backend expects authToken in headers)
+      const authToken = localStorage.getItem("authToken");
+      if (authToken) {
+        try {
+          await api.post(
+            "/logout",
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+              withCredentials: true,
+            }
+          );
+        } catch (err) {
+          console.warn(
+            "Backend logout failed, continuing with frontend logout"
+          );
+        }
+      }
 
+      //  Clear localStorage
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
+
+      //  Notify components listening for auth change
       window.dispatchEvent(new CustomEvent("authChange", { detail: false }));
 
+      //  Sign out from NextAuth if session exists
+      await signOut({ redirect: false }); // no redirect yet
+
+      //  Redirect to homepage
+      router.push("/");
+
+      // Show success message
       Swal.fire({
         icon: "success",
         title: "Logout Successful!",
@@ -98,14 +127,10 @@ const ProfilePage = () => {
         timerProgressBar: true,
       });
     } catch (error) {
-      const err = error as ApiError;
-
       Swal.fire({
         icon: "error",
         title: "Logout Failed",
-        text:
-          err.response?.data?.message ||
-          "Something went wrong, please try again.",
+        text: "Something went wrong, please try again.",
         position: "top",
         showConfirmButton: false,
         timer: 1000,

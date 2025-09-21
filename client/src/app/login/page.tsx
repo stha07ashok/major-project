@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import api from "../api/user/routes";
 import Swal from "sweetalert2";
+import { signIn, useSession } from "next-auth/react";
 
 type FormData = {
   email: string;
@@ -23,6 +24,7 @@ interface ApiError {
 }
 
 const LoginPage: React.FC = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -32,6 +34,16 @@ const LoginPage: React.FC = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+  useEffect(() => {
+    if (session?.accessToken) {
+      localStorage.setItem("authToken", session.accessToken);
+      localStorage.setItem("user", JSON.stringify(session.user));
+      window.dispatchEvent(new CustomEvent("authChange", { detail: true }));
+      router.push("/");
+    }
+  }, [session, router]);
+
+  // Email + password login
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       const res = await api.post("/login", data);
@@ -39,7 +51,6 @@ const LoginPage: React.FC = () => {
       localStorage.setItem("authToken", res.data.authToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // Notify app of login change
       window.dispatchEvent(new CustomEvent("authChange", { detail: true }));
 
       Swal.fire({
@@ -70,6 +81,7 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  // Forgot password
   const handleForgotPassword = async () => {
     const { value: email } = await Swal.fire({
       title: "Enter your email",
@@ -99,7 +111,7 @@ const LoginPage: React.FC = () => {
 
         Swal.fire({
           icon: "error",
-          title: "Login Failed",
+          title: "Request Failed",
           text:
             err.response?.data?.message ||
             "Something went wrong, please try again.",
@@ -110,6 +122,14 @@ const LoginPage: React.FC = () => {
         });
       }
     }
+  };
+
+  // Google login
+  const handleLoginWithGoogle = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    await signIn("google");
   };
 
   return (
@@ -129,6 +149,7 @@ const LoginPage: React.FC = () => {
           Login
         </motion.h2>
 
+        {/* Form */}
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-5 sm:gap-6"
@@ -222,7 +243,7 @@ const LoginPage: React.FC = () => {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             className="flex items-center justify-center gap-2 w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 sm:py-3 font-medium shadow-sm transition bg-white dark:bg-[#28343d] text-gray-900 dark:text-gray-100"
-            onClick={() => console.log("Login with Google")}
+            onClick={handleLoginWithGoogle}
           >
             <FaGoogle className="text-red-500" /> Login with Google
           </motion.button>

@@ -7,21 +7,26 @@ import { LuBrain } from "react-icons/lu";
 import Link from "next/link";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 interface User {
-  name: string;
-  email: string;
-  profilePicture?: string;
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  profilePicture?: string | null;
 }
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const { data: session } = useSession();
+  console.log("Navbar session:", session);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (session?.user) {
+      localStorage.setItem("user", JSON.stringify(session.user));
+      localStorage.setItem("authToken", session.accessToken!);
+      setUser(session.user);
     }
 
     // update if auth changes
@@ -36,7 +41,7 @@ const Navbar = () => {
 
     window.addEventListener("authChange", handleAuthChange);
     return () => window.removeEventListener("authChange", handleAuthChange);
-  }, []);
+  }, [session]);
 
   return (
     <div className="border-b bg-white dark:border-gray-600 dark:bg-[#1a252d] border-gray-200 w-full shadow-lg fixed top-0 z-50">
@@ -74,10 +79,14 @@ const Navbar = () => {
           </Link>
           <Dark />
 
-          {user ? (
+          {user || session?.user ? (
             <Link href="/profile">
               <Image
-                src={user.profilePicture || "/images/default-avatar.png"}
+                src={
+                  user?.profilePicture ||
+                  session?.user?.image ||
+                  "/images/default-avatar.png"
+                }
                 alt="Profile"
                 width={36}
                 height={36}
