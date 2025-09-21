@@ -246,6 +246,62 @@ const ProfilePage = () => {
           </form>
         )}
       </div>
+      {/* Account Settings */}
+      <div className="border border-gray-300 dark:border-gray-700 dark:bg-[#1f2b34] shadow-md rounded-xl p-6 mt-6 w-full max-w-3xl">
+        <h2 className="text-lg md:text-3xl font-bold">Account Settings</h2>
+        <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base mt-1">
+          Manage your account settings and set e-mail preferences.
+        </p>
+
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm md:text-base">
+          <div>
+            <p className="text-gray-500 dark:text-gray-400">Last Login</p>
+            <p className="font-medium">
+              {user?.lastlogin
+                ? new Date(user.lastlogin).toLocaleString()
+                : "N/A"}
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500 dark:text-gray-400">Created At</p>
+            <p className="font-medium">
+              {user?.createdAt
+                ? new Date(user.createdAt).toLocaleString()
+                : "N/A"}
+            </p>
+          </div>
+        </div>
+
+        {/* Change password + delete account */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6">
+          <div>
+            <p className="font-bold dark:text-gray-300 text-base md:text-lg">
+              Change Your Password
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Update your account password for improved security.
+            </p>
+          </div>
+          <button className="border border-gray-300 dark:border-gray-700 px-3 py-1 rounded-md shadow-md hoverEffect text-sm">
+            Change Password
+          </button>
+        </div>
+
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6">
+          <div>
+            <p className="font-bold dark:text-gray-300 text-base md:text-lg">
+              Delete Your Account
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Deleting your account will permanently remove your personal data
+              and settings.
+            </p>
+          </div>
+          <button className="border border-gray-300 dark:border-gray-700 px-3 py-1 rounded-md shadow-md hoverEffect text-sm">
+            Delete Account
+          </button>
+        </div>
+      </div>
 
       {/* Logout */}
       <button
