@@ -116,7 +116,6 @@ const LoginPage: React.FC = () => {
               : "#000",
           },
           position: "top-center",
-          duration: 3000,
         });
       } catch (error) {
         const err = error as ApiError;
