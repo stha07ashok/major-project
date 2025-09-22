@@ -57,7 +57,7 @@ export default class User extends Model<user> {
   })
   verificationTokenExpiresAt?: Date | null;
 
-  // relation with userdetails
-  @HasOne(() => UserDetails)
+  // Relation with UserDetails
+  @HasOne(() => UserDetails, { foreignKey: "id" })
   details!: UserDetails;
 }

@@ -15,6 +15,11 @@ import User from "./userModel";
   timestamps: true,
 })
 export default class UserDetails extends Model<userDetails> {
+  @PrimaryKey
+  @ForeignKey(() => User)
+  @Column({ type: DataType.INTEGER })
+  id!: number;
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -43,12 +48,6 @@ export default class UserDetails extends Model<userDetails> {
   })
   address?: string | null;
 
-  //  relation with usermodel
-  @PrimaryKey
-  @ForeignKey(() => User)
-  @Column({ type: DataType.INTEGER })
-  id!: number;
-
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, { foreignKey: "id" })
   user!: User;
 }

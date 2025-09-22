@@ -132,6 +132,7 @@ export const login: RequestHandler = async (
   res: Response
 ): Promise<void> => {
   const { email, password } = req.body;
+
   try {
     const user = await User.findOne({ where: { email } });
     if (!user) {
