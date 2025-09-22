@@ -51,7 +51,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     const createdUser = await User.create(newUser);
 
     // Generate JWT token and set it as a cookie
-    generateTokenAndSetCookie(res, createdUser.id);
+    generateTokenAndSetCookie(res, createdUser.id.toString());
 
     //send verification email
     await sendVerificationEmail(createdUser.email, Number(verificationToken));
@@ -144,7 +144,7 @@ export const login: RequestHandler = async (
       return;
     }
 
-    const token = generateTokenAndSetCookie(res, user.id);
+    const token = generateTokenAndSetCookie(res, user.id.toString());
 
     user.lastLogin = new Date();
     await user.save();

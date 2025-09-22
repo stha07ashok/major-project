@@ -1,11 +1,19 @@
-import { Table, Column, Model, DataType } from "sequelize-typescript";
+import { Table, Column, Model, DataType, HasOne } from "sequelize-typescript";
 import { user } from "../types/userTypes";
+import UserDetails from "./userDetailsModel";
 
 @Table({
-  tableName: "users",
+  tableName: "user",
   timestamps: true,
 })
 export default class User extends Model<user> {
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  })
+  id!: number;
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -48,4 +56,8 @@ export default class User extends Model<user> {
     allowNull: true,
   })
   verificationTokenExpiresAt?: Date | null;
+
+  // relation with userdetails
+  @HasOne(() => UserDetails)
+  details!: UserDetails;
 }

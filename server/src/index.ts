@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 
 import cors from "cors";
 import { router } from "./routes/userRouters";
+import { userDetailsRouter } from "./routes/userDetailsRouters";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api", router);
+app.use("/userdetails", userDetailsRouter);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
