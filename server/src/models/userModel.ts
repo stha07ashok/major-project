@@ -20,6 +20,25 @@ export default class User extends Model<user> {
   password!: string;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  fullname?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  picture?: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+    defaultValue: "local", 
+  })
+  provider!: string;
+
+  @Column({
     type: DataType.DATE,
     defaultValue: DataType.NOW,
   })

@@ -2,6 +2,7 @@ import express from "express";
 import {
   checkAuth,
   forgetpassword,
+  googleLogin,
   login,
   logout,
   resetPassword,
@@ -17,6 +18,8 @@ router.get("/checkauth", verifyToken, checkAuth);
 router.post("/login", login);
 router.post("/register", signup);
 router.post("/logout", logout);
+
+router.post("/google", googleLogin);
 
 router.post("/verify-email", verifyEmail);
 router.post("/forgetpassword", forgetpassword);

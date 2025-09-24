@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import User from "../models/userModel";
+
 import { Op } from "sequelize";
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
@@ -10,6 +10,7 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "../nodemailer/emails";
+import User from "../models/userModel";
 
 interface AuthenticatedRequest extends Request {
   userId?: string;
@@ -123,6 +124,62 @@ export const verifyEmail: RequestHandler = async (
   } catch (error) {
     console.log("error in verifyEmail ", error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// google login
+export const googleLogin = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { email, fullname, picture } = req.body;
+
+  try {
+    if (!email) {
+      res.status(400).json({ success: false, message: "Email is required" });
+      return;
+    }
+
+    let user = await User.findOne({ where: { email } });
+
+    
+
+    if (!user) {
+      user = await User.create({
+        email,
+        fullname,
+        picture,
+        password: "google_oauth_user", 
+        provider: "google",
+        isVerified: true, // Google emails are verified
+        lastLogin: new Date(),
+      });
+    } else {
+      user.lastLogin = new Date();
+      await user.save();
+    }
+
+    const token = generateTokenAndSetCookie(res, user.id.toString());
+
+    res.status(200).json({
+      success: true,
+      message: "Logged in with Google successfully",
+      authToken: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        fullname: user.fullname,
+        picture: user.picture,
+        provider: user.provider,
+        isVerified: user.isVerified,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        lastLogin: user.lastLogin,
+      },
+    });
+  } catch (error) {
+    console.log("Error in googleLogin ", error);
+    res.status(500).json({ success: false, message: (error as Error).message });
   }
 };
 
@@ -283,3 +340,4 @@ export const checkAuth = async (req: Request, res: Response): Promise<void> => {
     res.status(400).json({ success: false, message: (error as Error).message });
   }
 };
+

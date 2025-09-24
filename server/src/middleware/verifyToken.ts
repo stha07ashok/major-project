@@ -11,13 +11,22 @@ export const verifyToken = (
   next: NextFunction
 ): void => {
   try {
-    // Extract the token from cookies
-    const token = req.cookies.token;
+    // Extract the token from cookies or Authorization header
+    let token = req.cookies.token;
+    
+    // If no token in cookies, check Authorization header
+    if (!token) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
+      }
+    }
 
     if (!token) {
       res
         .status(401)
         .json({ success: false, message: "Unauthorized - no token provided" });
+      return;
     }
 
     // Verify the token
@@ -38,6 +47,7 @@ export const verifyToken = (
       res
         .status(401)
         .json({ success: false, message: "Unauthorized - invalid token" });
+      return;
     }
 
     // Other server errors
