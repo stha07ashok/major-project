@@ -16,6 +16,7 @@ export const router = express.Router();
 router.get("/checkauth", verifyToken, checkAuth);
 
 router.post("/login", login);
+
 router.post("/register", signup);
 router.post("/logout", logout);
 

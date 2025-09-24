@@ -21,7 +21,6 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const { data: session } = useSession();
-  console.log("Navbar session:", session);
 
   useEffect(() => {
     if (session?.user) {

@@ -142,14 +142,12 @@ export const googleLogin = async (
 
     let user = await User.findOne({ where: { email } });
 
-    
-
     if (!user) {
       user = await User.create({
         email,
         fullname,
         picture,
-        password: "google_oauth_user", 
+        password: "google_oauth_user",
         provider: "google",
         isVerified: true, // Google emails are verified
         lastLogin: new Date(),
@@ -340,4 +338,3 @@ export const checkAuth = async (req: Request, res: Response): Promise<void> => {
     res.status(400).json({ success: false, message: (error as Error).message });
   }
 };
-
