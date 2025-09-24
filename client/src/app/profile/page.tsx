@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../api/user/routes";
@@ -8,6 +9,7 @@ import { signOut } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 
 interface User {
+  id?: string;
   fullName?: string;
   email?: string;
   phoneNumber?: string;
@@ -27,17 +29,44 @@ interface ProfileFormData {
   email?: string;
 }
 
-const ProfilePage = () => {
+const ProfilePage: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  const { register, handleSubmit, reset } = useForm<ProfileFormData>();
+
+  // Fetch user from localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const storedUserStr = localStorage.getItem("user");
+    if (!storedUserStr) return;
+
+    try {
+      const storedUser: User = JSON.parse(storedUserStr);
+      if (Object.keys(storedUser).length > 0) {
+        setUser(storedUser);
+        reset({
+          fullName: storedUser.fullName || "",
+          phoneNumber: storedUser.phoneNumber || "",
+          dateOfBirth: storedUser.dateOfBirth || "",
+          address: storedUser.address || "",
+          email: storedUser.email || "",
+        });
+      }
+    } catch {
+      console.error("Failed to parse user from localStorage");
+    }
+  }, [reset]);
 
   const handleProfilePictureChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (!event.target.files?.length) return;
     setUploading(true);
+
     try {
       const file = event.target.files[0];
       console.log("Uploading file:", file);
@@ -56,24 +85,6 @@ const ProfilePage = () => {
     }
   };
 
-  const { register, handleSubmit, reset } = useForm();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-      if (storedUser && Object.keys(storedUser).length > 0) {
-        setUser(storedUser);
-        reset({
-          fullName: storedUser.fullName || "",
-          phoneNumber: storedUser.phoneNumber || "",
-          dateOfBirth: storedUser.dateOfBirth || "",
-          address: storedUser.address || "",
-          email: storedUser.email || "",
-        });
-      }
-    }
-  }, [reset]);
-
   const onSubmit = async (data: ProfileFormData) => {
     console.log("Submitting profile update with data:", data);
     toast.success("Profile updated successfully!", {
@@ -90,63 +101,47 @@ const ProfilePage = () => {
   };
 
   const handleLogout = async () => {
-    try {
-      const authToken = localStorage.getItem("authToken");
-      if (authToken) {
-        try {
-          await api.post(
-            "/logout",
-            {},
-            {
-              headers: { Authorization: `Bearer ${authToken}` },
-              withCredentials: true,
-            }
-          );
-        } catch (err) {
-          console.warn("Backend logout failed, continuing frontend logout");
-        }
+    const authToken = localStorage.getItem("authToken");
+
+    if (authToken) {
+      try {
+        await api.post(
+          "/logout",
+          {},
+          {
+            headers: { Authorization: `Bearer ${authToken}` },
+            withCredentials: true,
+          }
+        );
+      } catch {
+        console.warn("Backend logout failed, continuing frontend logout");
       }
-
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
-      window.dispatchEvent(new CustomEvent("authChange", { detail: false }));
-
-      await signOut({ redirect: false });
-      router.push("/");
-
-      toast.success("Logout Successful!", {
-        style: {
-          background: document.documentElement.classList.contains("dark")
-            ? "#1f2b34"
-            : "#fff",
-          color: document.documentElement.classList.contains("dark")
-            ? "#fff"
-            : "#000",
-        },
-        position: "top-center",
-      });
-    } catch (error) {
-      toast.error("Logout Failed. Please try again.", {
-        style: {
-          background: document.documentElement.classList.contains("dark")
-            ? "#1f2b34"
-            : "#fff",
-          color: document.documentElement.classList.contains("dark")
-            ? "#fff"
-            : "#000",
-        },
-        position: "top-center",
-        duration: 3000,
-      });
     }
+
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    window.dispatchEvent(new CustomEvent("authChange", { detail: false }));
+
+    await signOut({ redirect: false });
+    router.push("/");
+
+    toast.success("Logout Successful!", {
+      style: {
+        background: document.documentElement.classList.contains("dark")
+          ? "#1f2b34"
+          : "#fff",
+        color: document.documentElement.classList.contains("dark")
+          ? "#fff"
+          : "#000",
+      },
+      position: "top-center",
+    });
   };
 
   return (
     <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex flex-col items-center">
-      {/* Toaster */}
       <Toaster />
 
-      {/* Profile Picture */}
       {user && (
         <div className="flex flex-col items-center m-6">
           <Image
@@ -246,6 +241,7 @@ const ProfilePage = () => {
           </form>
         )}
       </div>
+
       {/* Account Settings */}
       <div className="border border-gray-300 dark:border-gray-700 dark:bg-[#1f2b34] shadow-md rounded-xl p-6 mt-6 w-full max-w-3xl">
         <h2 className="text-lg md:text-3xl font-bold">Account Settings</h2>
@@ -253,6 +249,7 @@ const ProfilePage = () => {
           Manage your account settings and set e-mail preferences.
         </p>
 
+        {/* Last Login & Created At */}
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm md:text-base">
           <div>
             <p className="text-gray-500 dark:text-gray-400">Last Login</p>
@@ -272,7 +269,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Change password + delete account */}
+        {/* Change Password */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6">
           <div>
             <p className="font-bold dark:text-gray-300 text-base md:text-lg">
@@ -287,6 +284,7 @@ const ProfilePage = () => {
           </button>
         </div>
 
+        {/* Delete Account */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-6">
           <div>
             <p className="font-bold dark:text-gray-300 text-base md:text-lg">
@@ -303,7 +301,6 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Logout */}
       <button
         className="mt-6 border border-gray-300 dark:border-gray-700 dark:bg-[#1f2b34] shadow-md rounded-full px-6 py-2 text-sm md:text-base font-bold hoverEffect"
         onClick={handleLogout}

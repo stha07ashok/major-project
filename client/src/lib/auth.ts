@@ -1,6 +1,12 @@
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 
+interface GoogleProfile {
+  email: string;
+  name: string;
+  picture: string;
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -24,39 +30,35 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, account, profile }) {
-      // When user signs in with Google
       if (account && profile) {
         try {
-          // Send Google user info to backend
           const res = await fetch(`${process.env.BACKEND_URL}/api/google`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            credentials: "include", // important for cookies
+            credentials: "include",
             body: JSON.stringify({
-              email: profile.email,
-              fullname: profile.name,
-              picture: (profile as any).picture,
+              email: (profile as GoogleProfile).email,
+              fullname: (profile as GoogleProfile).name,
+              picture: (profile as GoogleProfile).picture,
             }),
           });
 
           const data = await res.json();
           if (data.success) {
-            // Store backend user ID in token
             token.userId = data.user.id;
           }
-        } catch (err) {
-          console.error("Error syncing with backend:", err);
+        } catch {
+          console.error("Error syncing with backend");
         }
 
-        token.accessToken = account.access_token; // keep Google access token if needed
+        token.accessToken = account.access_token;
       }
-
       return token;
     },
 
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
-      session.user.id = token.userId as string; // attach backend user id
+      session.user.id = token.userId as string;
       return session;
     },
   },
