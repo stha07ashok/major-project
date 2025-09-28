@@ -98,6 +98,9 @@ const RegisterPage: React.FC = () => {
         duration: 3000,
       });
     }
+    if (loading) {
+      return <Loader />;
+    }
   };
 
   // Verification submit

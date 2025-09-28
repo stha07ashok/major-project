@@ -194,6 +194,13 @@ export const login: RequestHandler = async (
       res.status(400).json({ success: false, message: "Invalid credentials" });
       return;
     }
+    if (!user.isVerified) {
+      res.status(403).json({
+        success: false,
+        message: "Please verify your email before logging in",
+      });
+      return;
+    }
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!isPasswordValid) {
       res.status(400).json({ success: false, message: "Invalid credentials" });
