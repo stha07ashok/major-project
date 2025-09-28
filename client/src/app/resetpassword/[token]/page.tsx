@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import api from "../../api/user/routes";
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "@/components/Loader";
 
 interface ApiError {
   response?: {
@@ -19,6 +20,13 @@ const ResetPasswordPage = () => {
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const getToastStyle = () => ({
     background: document.documentElement.classList.contains("dark")
@@ -63,6 +71,10 @@ const ResetPasswordPage = () => {
       );
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center text-2xl">
