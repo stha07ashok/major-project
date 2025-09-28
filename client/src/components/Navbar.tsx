@@ -8,6 +8,7 @@ import Link from "next/link";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import Logout from "./Logout";
 
 interface User {
   id: string;
@@ -20,6 +21,7 @@ interface User {
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -80,7 +82,7 @@ const Navbar = () => {
           <Dark />
 
           {user || session?.user ? (
-            <Link href="/profile">
+            <div className="relative">
               <Image
                 src={
                   user?.profilePicture ||
@@ -91,8 +93,14 @@ const Navbar = () => {
                 width={36}
                 height={36}
                 className="rounded-full border border-green-400 cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
               />
-            </Link>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-[#1a252d] border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg p-3 z-50">
+                  <Logout />
+                </div>
+              )}
+            </div>
           ) : (
             <Link
               href="/login"

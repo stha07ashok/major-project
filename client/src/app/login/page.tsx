@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import api from "../api/user/routes";
 import { signIn, useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
+import Loader from "@/components/Loader";
 
 type FormData = {
   email: string;
@@ -27,6 +28,12 @@ const LoginPage: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     register,
@@ -146,6 +153,10 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     await signIn("google");
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8">
