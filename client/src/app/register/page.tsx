@@ -243,7 +243,7 @@ const RegisterPage: React.FC = () => {
               type="submit"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full rounded-lg bg-indigo-600 px-4 py-2 sm:py-3 text-white font-semibold shadow-md hover:bg-indigo-700 transition"
+              className="w-full rounded-lg bg-indigo-600 px-4 py-2 sm:py-3 text-white font-semibold shadow-md hover:bg-indigo-700 hoverEffect"
             >
               Register
             </motion.button>
