@@ -25,6 +25,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { data: session } = useSession();
 
+  // Load user from session or localStorage
   useEffect(() => {
     if (session?.user) {
       localStorage.setItem("user", JSON.stringify(session.user));
@@ -32,7 +33,6 @@ const Navbar = () => {
       setUser(session.user);
     }
 
-    // update if auth changes
     const handleAuthChange = () => {
       const updatedUser = localStorage.getItem("user");
       if (updatedUser) {
@@ -45,6 +45,17 @@ const Navbar = () => {
     window.addEventListener("authChange", handleAuthChange);
     return () => window.removeEventListener("authChange", handleAuthChange);
   }, [session]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest(".profile-dropdown") && dropdownOpen) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [dropdownOpen]);
 
   return (
     <div className="border-b bg-white dark:border-gray-600 dark:bg-[#1a252d] border-gray-200 w-full shadow-lg fixed top-0 z-50">
@@ -65,7 +76,7 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex gap-6 items-center">
+        <div className="hidden md:flex gap-6 justify-center relative">
           <Link
             href="/"
             className="font-bold hover:underline flex gap-1 items-center group hover:scale-105 transition-transform"
@@ -83,19 +94,25 @@ const Navbar = () => {
           <Dark />
 
           {user || session?.user ? (
-            <div className="relative">
-              <Image
-                src={
-                  user?.profilePicture ||
-                  session?.user?.image ||
-                  "/images/default-avatar.png"
-                }
-                alt="Profile"
-                width={36}
-                height={36}
-                className="rounded-full border border-green-400 cursor-pointer hover:scale-105 transition-transform"
+            <div className="relative profile-dropdown">
+              <div
+                className="flex items-center gap-2 cursor-pointer hoverEffect hover:underline"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-              />
+              >
+                <Image
+                  src={
+                    user?.profilePicture ||
+                    session?.user?.image ||
+                    "/images/default-avatar.png"
+                  }
+                  alt="Profile"
+                  width={36}
+                  height={36}
+                  className="rounded-full border border-green-400 cursor-pointer hover:scale-105 transition-transform"
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                />
+                <span className="font-bold">{user?.name || "Profile"}</span>
+              </div>
               {dropdownOpen && (
                 <div className="flex flex-col justify-center items-center absolute right-0 mt-2 w-64 bg-white dark:bg-[#293944] border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg p-3 z-50">
                   <Profile />
@@ -129,7 +146,7 @@ const Navbar = () => {
         <div className="md:hidden bg-white dark:bg-[#1a252d] border-t border-gray-200 dark:border-gray-600 px-6 py-4 flex flex-col items-center gap-4">
           <Link
             href="/"
-            className="font-bold hover:underline flex gap-2 items-center"
+            className="font-bold hover:underline flex items-center justify-center gap-2 w-full"
             onClick={() => setMenuOpen(false)}
           >
             <RxDashboard className="text-green-400" />
@@ -137,32 +154,43 @@ const Navbar = () => {
           </Link>
           <Link
             href="/aboutproject"
-            className="font-bold hover:underline flex gap-2 items-center"
+            className="font-bold hover:underline flex items-center justify-center gap-2 w-full"
             onClick={() => setMenuOpen(false)}
           >
             <LuBrain className="text-green-400" />
             About Project
           </Link>
           <Dark />
-          {user ? (
-            <Link
-              href="/profile"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2"
-            >
-              <Image
-                src={user.image || "/images/default-avatar.png"}
-                alt="Profile"
-                width={36}
-                height={36}
-                className="rounded-full p-1 border border-green-400"
-              />
-              <span className="font-bold">{user.name || "Profile"}</span>
-            </Link>
+          {user || session?.user ? (
+            <div className="relative profile-dropdown flex flex-col items-center w-full">
+              <div
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+              >
+                <Image
+                  src={
+                    user?.profilePicture ||
+                    session?.user?.image ||
+                    "/images/default-avatar.png"
+                  }
+                  alt="Profile"
+                  width={36}
+                  height={36}
+                  className="rounded-full border border-green-400"
+                />
+                <span className="font-bold">{user?.name || "Profile"}</span>
+              </div>
+              {dropdownOpen && (
+                <div className="flex flex-col w-full items-center gap-2 mt-2">
+                  <Profile />
+                  <Logout />
+                </div>
+              )}
+            </div>
           ) : (
             <Link
               href="/login"
-              className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg text-center"
+              className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg text-center w-full"
               onClick={() => setMenuOpen(false)}
             >
               Login
@@ -173,5 +201,4 @@ const Navbar = () => {
     </div>
   );
 };
-
 export default Navbar;
