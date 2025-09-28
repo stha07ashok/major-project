@@ -80,6 +80,7 @@ const RegisterPage: React.FC = () => {
 
   // Register form submit
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setLoading(true);
     try {
       await api.post("/register", data);
       setEmailForVerification(data.email);
@@ -97,9 +98,8 @@ const RegisterPage: React.FC = () => {
         position: "top-center",
         duration: 3000,
       });
-    }
-    if (loading) {
-      return <Loader />;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,6 +114,7 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const res: { data: { success: boolean; message: string } } =
         await api.post("/verify-email", {
@@ -135,6 +136,8 @@ const RegisterPage: React.FC = () => {
         position: "top-center",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -280,7 +283,7 @@ const RegisterPage: React.FC = () => {
             />
             <button
               onClick={handleVerificationSubmit}
-              className="w-full bg-green-500 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition duration-200 px-4"
+              className="w-full hoverEffect bg-green-500 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition duration-200 px-4"
             >
               Verify and Complete Registration
             </button>
