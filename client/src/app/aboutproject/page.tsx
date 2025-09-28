@@ -1,9 +1,11 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { IoCameraOutline } from "react-icons/io5";
 import { LuBrain, LuShield } from "react-icons/lu";
 import { MdOutlineAccessTime, MdPeople } from "react-icons/md";
 import { LiaDotCircleSolid } from "react-icons/lia";
 import { RiMotorbikeFill } from "react-icons/ri";
+import Loader from "@/components/Loader";
 
 const skills = [
   "Computer Vision",
@@ -23,6 +25,16 @@ const skills = [
 ];
 
 const AboutProject = () => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div className="px-4 sm:px-6 lg:px-12 py-8">
       <div className="flex flex-col gap-6 my-8">
