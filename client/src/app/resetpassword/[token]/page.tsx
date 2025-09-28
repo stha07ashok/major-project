@@ -49,6 +49,7 @@ const ResetPasswordPage = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const res = await api.post(`/resetpassword/${token}`, { password });
 
@@ -69,6 +70,8 @@ const ResetPasswordPage = () => {
           duration: 3000,
         }
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,7 +122,7 @@ const ResetPasswordPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-green-400 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+            className="w-full bg-green-300 hoverEffect hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
           >
             Reset Password
           </button>

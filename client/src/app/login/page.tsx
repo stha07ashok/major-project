@@ -67,6 +67,7 @@ const LoginPage: React.FC = () => {
 
   // Email + password login
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    setLoading(true);
     try {
       const res = await api.post("/login", data);
 
@@ -103,6 +104,8 @@ const LoginPage: React.FC = () => {
         position: "top-center",
         duration: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -110,6 +113,7 @@ const LoginPage: React.FC = () => {
   const handleForgotPassword = async () => {
     const email = prompt("Enter your email to reset password:");
     if (email) {
+      setLoading(true);
       try {
         const res = await api.post("/forgetpassword", { email });
 
@@ -142,6 +146,8 @@ const LoginPage: React.FC = () => {
             duration: 3000,
           }
         );
+      } finally {
+        setLoading(false);
       }
     }
   };
