@@ -9,6 +9,7 @@ import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Logout from "./Logout";
+import Profile from "./Profile";
 
 interface User {
   id: string;
@@ -96,7 +97,8 @@ const Navbar = () => {
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               />
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-[#1a252d] border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg p-3 z-50">
+                <div className="flex flex-col justify-center items-center absolute right-0 mt-2 w-64 bg-white dark:bg-[#293944] border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg p-3 z-50">
+                  <Profile />
                   <Logout />
                 </div>
               )}
