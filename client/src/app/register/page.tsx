@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import api from "../api/user/routes";
 import toast, { Toaster } from "react-hot-toast";
 import { signIn, useSession } from "next-auth/react";
+import Loader from "@/components/Loader";
 
 type FormData = {
   email: string;
@@ -28,6 +29,12 @@ const RegisterPage: React.FC = () => {
   const [emailForVerification, setEmailForVerification] = useState("");
   const [showVerificationInput, setShowVerificationInput] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     register,
@@ -136,6 +143,9 @@ const RegisterPage: React.FC = () => {
     await signIn("google");
   };
 
+  if (loading) {
+    return <Loader />;
+  }
   return (
     <div className="min-h-[calc(160vh-450px)] px-4 py-22 flex items-center justify-center sm:px-6 lg:px-8">
       {/* Toaster for rendering all toasts */}
