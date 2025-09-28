@@ -51,7 +51,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="flex flex-col items-center m-6 shadow-lg gap-4 p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
+    <div className="flex flex-col items-center m-6 shadow-lg gap-4 p-4 border border-gray-200 dark:bg-[#1f2b34]  rounded-lg">
       <Image
         src={user?.image || "/images/default-avatar.png"}
         alt="Profile"
@@ -59,7 +59,7 @@ const Profile = () => {
         height={100}
         className="rounded-full border-2 border-green-400 cursor-pointer hover:scale-105 transition-transform object-cover"
       />
-      <label className="mt-3 text-sm cursor-pointer border border-gray-300 dark:border-gray-700 dark:bg-[#1f2b34] px-4 py-2 rounded-lg shadow-md hoverEffect">
+      <label className="mt-3 text-sm cursor-pointer border border-gray-300 dark:border-gray-700 dark:bg-gray-600  px-4 py-2 rounded-lg shadow-md hoverEffect">
         {uploading ? "Uploading..." : "Change Picture"}
         <input
           type="file"
