@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { FaRegEye } from "react-icons/fa6";
 import { CgDanger } from "react-icons/cg";
 import { MdPeople } from "react-icons/md";
@@ -7,8 +8,20 @@ import { RiMotorbikeFill } from "react-icons/ri";
 import { LuShield } from "react-icons/lu";
 import LiveViolations from "@/components/liveViolations";
 import RecordedViolations from "@/components/RecordedViolations";
+import Loader from "@/components/Loader";
 
 export default function Page() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="min-h-[calc(160vh-450px)] px-3 py-22 sm:px-6 lg:px-10 ">
       <div className="flex flex-col gap-6">
