@@ -11,6 +11,7 @@ import {
   sendWelcomeEmail,
 } from "../nodemailer/emails";
 import User from "../models/userModel";
+import { v2 as cloudinary } from "cloudinary";
 
 interface AuthenticatedRequest extends Request {
   userId?: string;
@@ -343,5 +344,55 @@ export const checkAuth = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.log("Error in checkAuth ", error);
     res.status(400).json({ success: false, message: (error as Error).message });
+  }
+};
+
+// Configure cloudinary (ensure these env variables are set)
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
+});
+
+export const uploadProfilePicture = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const userId = (req as AuthenticatedRequest).userId;
+    if (!userId) {
+      res.status(401).json({ success: false, message: "Unauthorized" });
+      return;
+    }
+
+    if (!req.file) {
+      res.status(400).json({ success: false, message: "No file uploaded" });
+      return;
+    }
+
+    // Upload to cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "profile_pictures",
+      public_id: `user_${userId}_${Date.now()}`,
+      resource_type: "image",
+    });
+
+    // Update user profile picture URL
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404).json({ success: false, message: "User not found" });
+      return;
+    }
+    user.picture = result.secure_url;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile picture uploaded successfully",
+      pictureUrl: result.secure_url,
+    });
+  } catch (error) {
+    console.log("Error in uploadProfilePicture", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

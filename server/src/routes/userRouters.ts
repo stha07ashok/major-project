@@ -7,6 +7,7 @@ import {
   logout,
   resetPassword,
   signup,
+  uploadProfilePicture,
   verifyEmail,
 } from "../controllers/userController";
 import { verifyToken } from "../middleware/verifyToken";
@@ -24,3 +25,5 @@ router.post("/google", googleLogin);
 router.post("/verify-email", verifyEmail);
 router.post("/forgetpassword", forgetpassword);
 router.post("/resetpassword/:token", resetPassword);
+
+router.post("/uploadprofilepicture", verifyToken, uploadProfilePicture);
