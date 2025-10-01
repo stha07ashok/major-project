@@ -24,6 +24,7 @@ const Logout = () => {
     const authToken = localStorage.getItem("authToken");
 
     if (authToken) {
+      setLoading(true);
       try {
         await api.post(
           "/logout",
@@ -36,6 +37,7 @@ const Logout = () => {
       } catch {
         console.warn("Backend logout failed, continuing frontend logout");
       }
+      setLoading(false);
     }
 
     localStorage.removeItem("authToken");
