@@ -35,9 +35,10 @@ const Navbar = () => {
 
   // Load user from session or localStorage
   useEffect(() => {
-    const mapUser = (u: any): User => ({
+    const mapUser = (u: Partial<User>): User => ({
       ...u,
-      profilePicture: u.profilePicture || u.picture || u.image || null,
+      id: u.id ?? "",
+      profilePicture: u.profilePicture || u.picture || u.image || undefined,
     });
 
     if (session?.user) {
