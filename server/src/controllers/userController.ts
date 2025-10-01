@@ -12,6 +12,7 @@ import {
 } from "../nodemailer/emails";
 import User from "../models/userModel";
 import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 
 interface AuthenticatedRequest extends Request {
   userId?: string;
@@ -220,6 +221,7 @@ export const login: RequestHandler = async (
       user: {
         id: user.id,
         email: user.email,
+        profilePicture: user.picture,
         isVerified: user.isVerified,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -355,34 +357,38 @@ cloudinary.config({
 });
 
 export const uploadProfilePicture = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response
-): Promise<void> => {
+) => {
   try {
-    const userId = (req as AuthenticatedRequest).userId;
-    if (!userId) {
-      res.status(401).json({ success: false, message: "Unauthorized" });
-      return;
-    }
+    const userId = req.userId;
+    if (!userId)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    if (!req.file) {
-      res.status(400).json({ success: false, message: "No file uploaded" });
-      return;
-    }
+    if (!req.file)
+      return res
+        .status(400)
+        .json({ success: false, message: "No file uploaded" });
 
-    // Upload to cloudinary
+    // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "profile_pictures",
       public_id: `user_${userId}_${Date.now()}`,
       resource_type: "image",
     });
 
-    // Update user profile picture URL
+    // Delete local file after upload
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error("Error deleting local file:", err);
+    });
+
+    // Update user profile picture
     const user = await User.findByPk(userId);
-    if (!user) {
-      res.status(404).json({ success: false, message: "User not found" });
-      return;
-    }
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
     user.picture = result.secure_url;
     await user.save();
 
@@ -392,7 +398,7 @@ export const uploadProfilePicture = async (
       pictureUrl: result.secure_url,
     });
   } catch (error) {
-    console.log("Error in uploadProfilePicture", error);
+    console.error("Error in uploadProfilePicture", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

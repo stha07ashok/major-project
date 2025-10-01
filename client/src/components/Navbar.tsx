@@ -9,34 +9,57 @@ import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Logout from "./Logout";
-import Profile from "./Profile";
+import api from "@/app/api/user/routes";
+import toast, { Toaster } from "react-hot-toast";
+import { useTheme } from "next-themes";
 
 interface User {
   id: string;
   name?: string | null;
   email?: string | null;
-  profilePicture?: string | null;
+  profilePicture?: string;
   image?: string | null;
+  picture?: string | null;
 }
 
 const Navbar = () => {
+  const { theme } = useTheme();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { data: session } = useSession();
 
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+
   // Load user from session or localStorage
   useEffect(() => {
+    const mapUser = (u: any): User => ({
+      ...u,
+      profilePicture: u.profilePicture || u.picture || u.image || null,
+    });
+
     if (session?.user) {
-      localStorage.setItem("user", JSON.stringify(session.user));
-      localStorage.setItem("authToken", session.accessToken!);
-      setUser(session.user);
+      const mappedUser = mapUser(session.user);
+      localStorage.setItem("user", JSON.stringify(mappedUser));
+      if (session.accessToken) {
+        localStorage.setItem("authToken", session.accessToken);
+      }
+      setUser(mappedUser);
+    } else {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(mapUser(JSON.parse(storedUser)));
+      } else {
+        setUser(null);
+      }
     }
 
     const handleAuthChange = () => {
       const updatedUser = localStorage.getItem("user");
       if (updatedUser) {
-        setUser(JSON.parse(updatedUser));
+        setUser(mapUser(JSON.parse(updatedUser)));
       } else {
         setUser(null);
       }
@@ -57,8 +80,61 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [dropdownOpen]);
 
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  // Handle upload
+  const handleUpload = async () => {
+    if (!file) return alert("Please select a file first.");
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await api.post("/uploadprofilepicture", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        const updatedUser: User = {
+          ...user,
+          id: user?.id ?? "",
+          profilePicture: response.data.pictureUrl,
+        };
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+
+        toast.success(response.data.message || "Profile picture updated!", {
+          style: {
+            background: theme === "dark" ? "#1f2b34" : "#fff",
+            color: theme === "dark" ? "#fff" : "#000",
+          },
+          position: "top-center",
+        });
+      }
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Failed to upload image", {
+        style: {
+          background: theme === "dark" ? "#1f2b34" : "#fff",
+          color: theme === "dark" ? "#fff" : "#000",
+        },
+        position: "top-center",
+      });
+    } finally {
+      setLoading(false);
+      setFile(null);
+    }
+  };
+
   return (
     <div className="border-b bg-white dark:border-gray-600 dark:bg-[#1a252d] border-gray-200 w-full shadow-lg fixed top-0 z-50">
+      <Toaster />
       <div className="flex justify-between items-center px-3 md:px-10 py-3 md:py-4">
         {/* Logo */}
         <Link href="/" className="flex gap-3 cursor-pointer">
@@ -96,26 +172,68 @@ const Navbar = () => {
           {user || session?.user ? (
             <div className="relative profile-dropdown">
               <div
-                className="flex items-center gap-2 cursor-pointer hoverEffect hover:underline"
+                className="flex gap-2 items-center cursor-pointer group hoverEffect hover:underline"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                <Image
-                  src={
-                    user?.profilePicture ||
-                    session?.user?.image ||
-                    "/images/default-avatar.png"
-                  }
-                  alt="Profile"
-                  width={36}
-                  height={36}
-                  className="rounded-full border border-green-400 cursor-pointer hover:scale-105 transition-transform"
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                />
-                <span className="font-bold">{user?.name || "Profile"}</span>
+                <div className="w-9 h-9 rounded-full overflow-hidden border border-green-400 cursor-pointer hover:scale-105 transition-transform">
+                  <Image
+                    src={
+                      user?.profilePicture ||
+                      session?.user?.image ||
+                      "/images/default-avatar.png"
+                    }
+                    alt="Profile"
+                    width={36}
+                    height={36}
+                    className="object-cover w-full h-full"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                  />
+                </div>
+                <span className="font-bold text-lg">
+                  {user?.name || "Profile"}
+                </span>
               </div>
               {dropdownOpen && (
-                <div className="flex flex-col justify-center items-center absolute right-0 mt-2 w-64 bg-white dark:bg-[#293944] border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg p-3 z-50">
-                  <Profile />
+                <div className="absolute right-0 mt-2 w-64 sm:w-72 bg-white dark:bg-[#1f2b34] border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg p-4 z-50 flex flex-col items-center gap-4">
+                  {/* Large Profile */}
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-green-400">
+                    <Image
+                      src={
+                        user?.profilePicture ||
+                        session?.user?.image ||
+                        "/images/default-avatar.png"
+                      }
+                      alt="Profile"
+                      width={96}
+                      height={96}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+
+                  <span className="font-bold text-lg">
+                    {user?.name || "Profile"}
+                  </span>
+
+                  {/* Upload */}
+                  <div className="border dark:bg-[#293944] border-gray-200 dark:border-gray-700 rounded-lg shadow-lg gap-2 p-4 text-sm w-full flex flex-col items-center">
+                    <span className="text-lg font-light">
+                      Update Your Profile Picture
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="mb-2 border dark:bg-[#1f2b34] border-gray-200 dark:border-gray-700 rounded-lg shadow-lg gap-2 p-2 text-sm w-full"
+                      title="Select a profile picture"
+                    />
+                    <button
+                      onClick={handleUpload}
+                      className="px-4 py-2 bg-green-500 text-white rounded-lg shadow-lg hoverEffect w-full"
+                      disabled={loading}
+                    >
+                      {loading ? "Updating..." : "Change Profile"}
+                    </button>
+                  </div>
                   <Logout />
                 </div>
               )}
@@ -123,7 +241,7 @@ const Navbar = () => {
           ) : (
             <Link
               href="/login"
-              className="font-bold border border-green-400 rounded-full px-3 py-1 shadow-lg hover:scale-105 transition-transform"
+              className="font-bold border border-green-400  rounded-full px-3 py-1 shadow-lg hover:scale-105 transition-transform"
             >
               Login
             </Link>
@@ -162,27 +280,52 @@ const Navbar = () => {
           </Link>
           <Dark />
           {user || session?.user ? (
-            <div className="relative profile-dropdown flex flex-col items-center w-full">
+            <div className="relative profile-dropdown gap-2 flex flex-col items-center w-full">
               <div
-                className="flex items-center gap-2 cursor-pointer"
+                className="flex gap-2 items-center cursor-pointer group hoverEffect hover:underline"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                <Image
-                  src={
-                    user?.profilePicture ||
-                    session?.user?.image ||
-                    "/images/default-avatar.png"
-                  }
-                  alt="Profile"
-                  width={36}
-                  height={36}
-                  className="rounded-full border border-green-400"
-                />
-                <span className="font-bold">{user?.name || "Profile"}</span>
+                <div className="w-9 h-9 rounded-full overflow-hidden border border-green-400 cursor-pointer hover:scale-105 transition-transform">
+                  <Image
+                    src={
+                      user?.profilePicture ||
+                      session?.user?.image ||
+                      "/images/default-avatar.png"
+                    }
+                    alt="Profile"
+                    width={36}
+                    height={36}
+                    className="object-cover w-full h-full"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                  />
+                </div>
+                <span className="font-bold text-lg">
+                  {user?.name || "Profile"}
+                </span>
               </div>
+
               {dropdownOpen && (
-                <div className="flex flex-col w-full items-center gap-2 mt-2">
-                  <Profile />
+                <div className="flex flex-col  w-full items-center gap-2 mt-2">
+                  <div className="border dark:bg-[#293944] border-gray-200 dark:border-gray-700 rounded-lg shadow-lg gap-2 p-4 text-sm w-full flex flex-col items-center">
+                    <span className="text-lg font-light">
+                      Update Your Profile Picture
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="mb-2 border dark:bg-[#1f2b34] border-gray-200 dark:border-gray-700 rounded-lg shadow-lg gap-2 p-2 text-sm w-full"
+                      title="Select a profile picture"
+                      placeholder="Choose image"
+                    />
+                    <button
+                      onClick={handleUpload}
+                      className="px-4 py-1 bg-green-500 text-white rounded-lg shadow-lg hover:scale-105 transition w-full"
+                      disabled={loading}
+                    >
+                      {loading ? "Updating..." : "Change Profile"}
+                    </button>
+                  </div>
                   <Logout />
                 </div>
               )}
@@ -201,4 +344,5 @@ const Navbar = () => {
     </div>
   );
 };
+
 export default Navbar;

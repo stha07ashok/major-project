@@ -11,6 +11,7 @@ import {
   verifyEmail,
 } from "../controllers/userController";
 import { verifyToken } from "../middleware/verifyToken";
+import upload from "../middleware/upload.multer";
 
 export const router = express.Router();
 
@@ -26,4 +27,9 @@ router.post("/verify-email", verifyEmail);
 router.post("/forgetpassword", forgetpassword);
 router.post("/resetpassword/:token", resetPassword);
 
-router.post("/uploadprofilepicture", verifyToken, uploadProfilePicture);
+router.post(
+  "/uploadprofilepicture",
+  verifyToken,
+  upload.single("file"),
+  uploadProfilePicture
+);
